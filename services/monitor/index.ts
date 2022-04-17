@@ -8,46 +8,31 @@ import { requireEnv } from './utils/env';
 import logger, { WinstonLogCreator } from './utils/logger';
 
 const kafkaTopic = requireEnv('KAFKA_TOPIC');
-const kafkaConsumerGroup = requireEnv('KAFKA_CONSUMER_GROUP');
 const kafkaBroker = requireEnv('KAFKA_BROKER');
 const kafka = new Kafka({
-  clientId: 'loan-notification-notifier',
+  clientId: 'loan-notification-monitor',
   brokers: [kafkaBroker],
   connectionTimeout: 20000, // 20 seconds
   logLevel: logLevel.INFO,
   logCreator: WinstonLogCreator
 });
-const consumer = kafka.consumer({
-  groupId: kafkaConsumerGroup,
+const producer = kafka.producer({
+  idempotent: false,
 });
 
 async function start() {
-  await consumer.subscribe({
-    topic: kafkaTopic,
-    fromBeginning: true,
-  });
+  logger.info('producer is connecting to kafka broker(s)');
 
-  logger.info('consumer is connecting to kafka broker(s)');
+  await producer.connect();
 
-  await consumer.connect();
-  await consumer.run({
-    eachMessage: async ({ topic, partition, message }) => {
-      console.log({
-        topic,
-        partition,
-        value: message.value?.toString(),
-      });
-    },
-  });
-
-  logger.info('consumer is running');
+  logger.info('producer is running');
 }
 
 start().catch((err) => {
   console.error(err.message, { stack: err.stack });
   process.exit(1);
 }).finally(async () => {
-  await consumer.disconnect();
+  await producer.disconnect();
 });
 
 const errorTypes = ['unhandledRejection', 'uncaughtException'];
@@ -59,7 +44,7 @@ errorTypes.forEach(type => {
       logger.error(`process.on ${type}`)
       logger.error(err.message, { stack: err.stack });
 
-      await consumer.disconnect();
+      await producer.disconnect();
 
       process.exit(0);
     } catch (_) {
@@ -71,7 +56,7 @@ errorTypes.forEach(type => {
 signalTraps.forEach(type => {
   process.once(type, async () => {
     try {
-      await consumer.disconnect();
+      await producer.disconnect();
     } finally {
       process.kill(process.pid, type);
     }
