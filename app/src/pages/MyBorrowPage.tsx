@@ -4,7 +4,11 @@ import MainLayout from "../components/MainLayout";
 const MyBorrowPageStyle = styled.div``;
 
 const MyBorrowPage = () => {
-  return <MainLayout>sadasdadsadd dsadsad</MainLayout>;
+  return (
+    <MyBorrowPageStyle>
+      <MainLayout>MyBorrowPage</MainLayout>
+    </MyBorrowPageStyle>
+  );
 };
 
 export default MyBorrowPage;

@@ -4,7 +4,11 @@ import MainLayout from "../components/MainLayout";
 const SettingPageStyle = styled.div``;
 
 const SettingPage = () => {
-  return <MainLayout>sadasdadsadd dsadsad</MainLayout>;
+  return (
+    <SettingPageStyle>
+      <MainLayout>Setting</MainLayout>;
+    </SettingPageStyle>
+  );
 };
 
 export default SettingPage;

@@ -30,7 +30,7 @@ export const useAccount = () => {
   useEffect(() => {
     const account = getAccounts();
     setAccount(account);
-  }, []);
+  }, [setAccount]);
 
   const connect = (addresses: string[], selectedAddress: string) => {
     setAddresses(addresses, selectedAddress);

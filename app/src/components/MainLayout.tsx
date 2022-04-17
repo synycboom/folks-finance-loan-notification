@@ -3,7 +3,7 @@ import { Layout, Menu } from "antd";
 import { useLocation, Link } from "react-router-dom";
 import ConnectWalletButton from "./ConnectWalletButton";
 
-const { Header, Content, Footer } = Layout;
+const { Header, Content } = Layout;
 
 const LayoutStyle = styled(Layout)`
   .ant-layout-header {

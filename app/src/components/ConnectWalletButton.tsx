@@ -51,10 +51,6 @@ const ConnectWalletButton = () => {
     setIsModalVisible(false);
   };
 
-  const hidePopover = () => {
-    setIsPopoverVisible(false);
-  };
-
   const selectAddress = (addresses: string[], address: string) => {
     connect(addresses, address);
     hideModal();
