@@ -18,6 +18,8 @@ const LayoutStyle = styled(Layout)`
   .ant-menu {
     min-width: 200px;
     width: 100%;
+    font-weight: bold;
+    font-size: 16px;
   }
 
   .ant-menu-horizontal {
