@@ -1,0 +1,24 @@
+{
+  "name": "notifier",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "ts-node-dev ./index.ts",
+    "start": "tsc && node ./dist/index.js",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.0",
+    "kafkajs": "^1.16.0",
+    "winston": "^3.7.2"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "description": "",
+  "devDependencies": {
+    "@types/node": "^17.0.24",
+    "ts-node-dev": "^1.1.8",
+    "typescript": "^4.6.3"
+  }
+}

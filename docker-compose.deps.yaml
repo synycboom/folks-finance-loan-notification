@@ -1,31 +1,8 @@
 version: "3.3"
 services:
-  user-setting:
-    container_name: loan-notification-user-setting
-    build:
-      context: services/user-setting
-      dockerfile: ./Dockerfile
-    restart: "on-failure"
-    env_file:
-      - services/user-setting/.env.production
-    depends_on:
-      - mongo
-
-  notifier:
-    container_name: loan-notification-notifier
-    build:
-      context: services/notifier
-      dockerfile: ./Dockerfile
-    restart: "on-failure"
-    env_file:
-      - services/notifier/.env.production
-    depends_on:
-      - zookeeper
-      - kafka
-
   zookeeper:
     image: docker.io/bitnami/zookeeper:3.8
-    container_name: loan-notification-zookeeper
+    container_name: loan-notification-dev-zookeeper
     ports:
       - "2181:2181"
     volumes:
@@ -35,7 +12,7 @@ services:
 
   kafka:
     image: docker.io/bitnami/kafka:3.1
-    container_name: loan-notification-kafka
+    container_name: loan-notification-dev-kafka
     ports:
       - "9093:9093"
       - "9092:9092"
@@ -53,15 +30,15 @@ services:
 
   mongo:
     image: mongo:5.0.7
-    container_name: loan-notification-mongo
+    container_name: loan-notification-dev-mongo
     restart: always
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: root
-    ports:
-      - 27017:27017
     volumes:
       - "mongo_data:/data/db"
+    ports:
+      - 27017:27017
     logging:
       driver: none
 
