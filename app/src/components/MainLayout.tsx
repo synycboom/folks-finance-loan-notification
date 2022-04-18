@@ -54,7 +54,7 @@ const MainLayout = ({ children }: any) => {
             <Link to="/my-borrows">My Borrows</Link>
           </Menu.Item>
           <Menu.Item key="/setting">
-            <Link to="/setting">Setting</Link>
+            <Link to="/setting">Settings</Link>
           </Menu.Item>
         </Menu>
         <div className="right-container">
