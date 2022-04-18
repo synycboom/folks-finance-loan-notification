@@ -29,6 +29,7 @@
     "express": "^4.17.3",
     "express-async-handler": "^1.2.0",
     "express-validator": "^6.14.0",
+    "folks-finance-js-sdk": "https://github.com/Folks-Finance/folks-finance-js-sdk",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.3.0",
     "tweetnacl": "^1.0.3",
