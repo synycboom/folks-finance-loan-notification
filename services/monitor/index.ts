@@ -3,6 +3,7 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
+import express, { Application } from "express";
 import { Kafka, logLevel } from 'kafkajs';
 import { requireEnv } from './utils/env';
 import logger, { WinstonLogCreator } from './utils/logger';
@@ -19,6 +20,8 @@ const kafka = new Kafka({
 const producer = kafka.producer({
   idempotent: false,
 });
+const app: Application = express();
+const port = process.env.PORT || 8080;
 
 async function start() {
   logger.info('producer is connecting to kafka broker(s)');
@@ -26,6 +29,13 @@ async function start() {
   await producer.connect();
 
   logger.info('producer is running');
+
+  app.get('/health', (_, res) => {
+    res.send('ok');
+  });
+  app.listen(port, (): void => {
+    logger.info(`running server on port ${port}`);
+  });
 }
 
 start().catch((err) => {
