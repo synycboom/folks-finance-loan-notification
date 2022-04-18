@@ -5,6 +5,10 @@ dotenv.config();
 import express, { Application } from "express";
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import authRoutes from './apis/auth';
+import logger from './utils/logger';
+import { errorHandler } from './errors';
+import initializeDb from './db';
 
 const app: Application = express();
 const port = process.env.PORT || 8080;
@@ -20,14 +24,20 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use('/v1/auth', authRoutes);
+app.use(errorHandler);
 
 async function start() {
+  logger.info('initializing database connection...')
+
+  await initializeDb();
+
   app.listen(port, (): void => {
-    console.log(`Running server on port ${port}`);
+    logger.info(`running server on port ${port}`);
   });
 }
 
 start().catch((err) => {
-  console.error(err.message, { stack: err.stack });
+  logger.error(err.message, { stack: err.stack });
   process.exit(1);
 });

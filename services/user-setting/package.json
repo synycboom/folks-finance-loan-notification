@@ -22,14 +22,16 @@
     "typescript": "^4.6.3"
   },
   "dependencies": {
+    "algosdk": "^1.15.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.0.0",
-    "ethereumjs-util": "^7.1.4",
     "express": "^4.17.3",
     "express-async-handler": "^1.2.0",
     "express-validator": "^6.14.0",
     "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.3.0",
+    "tweetnacl": "^1.0.3",
     "validator": "^13.7.0",
     "winston": "^3.7.2"
   }
