@@ -39,9 +39,9 @@ const ModalStyle = styled(Modal)`
 const ConnectWalletButton = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isPopoverVisible, setIsPopoverVisible] = useState(false);
-  const [currectAddresses, setCurrectAddresses] = useState<string[]>([]);
+
   const { account, connect } = useAccount();
-  const { selectedAddress, isConnect } = account;
+  const { address, isConnect } = account;
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -51,24 +51,12 @@ const ConnectWalletButton = () => {
     setIsModalVisible(false);
   };
 
-  const selectAddress = (addresses: string[], address: string) => {
-    connect(addresses, address);
+  const algoConnect = async () => {
+    const [account] = await myAlgoWallet.connect({
+      shouldSelectOneAccount: true,
+    });
+    connect(account.address);
     hideModal();
-  };
-
-  const algoConnect = () => {
-    myAlgoWallet
-      .connect()
-      .then((accounts) => {
-        const addresses = accounts.map((account) => account.address);
-        setCurrectAddresses(addresses);
-        if (addresses.length < 2) {
-          selectAddress(addresses, addresses[0]);
-        }
-      })
-      .catch((err: any) => {
-        // Error
-      });
   };
 
   return (
@@ -83,7 +71,7 @@ const ConnectWalletButton = () => {
           onVisibleChange={(visible) => setIsPopoverVisible(visible)}
         >
           <Button size="large" shape="round">
-            {formatAddress(selectedAddress)}
+            {formatAddress(address)}
             <CaretDownOutlined />
           </Button>
         </Popover>
@@ -106,32 +94,17 @@ const ConnectWalletButton = () => {
         width={320}
         onCancel={hideModal}
       >
-        {currectAddresses.length > 1 ? (
-          currectAddresses.map((address) => (
-            <Button
-              type="primary"
-              shape="round"
-              key={address}
-              block
-              size="large"
-              onClick={() => selectAddress(currectAddresses, address)}
-            >
-              {formatAddress(address)}
-            </Button>
-          ))
-        ) : (
-          <Button
-            type="primary"
-            shape="round"
-            className="provider-button"
-            block
-            size="large"
-            onClick={algoConnect}
-          >
-            <img src="/my-algo.png" alt="my-algo" className="provider-logo" />
-            My Algo
-          </Button>
-        )}
+        <Button
+          type="primary"
+          shape="round"
+          className="provider-button"
+          block
+          size="large"
+          onClick={algoConnect}
+        >
+          <img src="/my-algo.png" alt="my-algo" className="provider-logo" />
+          My Algo
+        </Button>
         {/* <Button type="primary" shape="round" block size="large">
           <img
             src="/pera-wallet-white.svg"

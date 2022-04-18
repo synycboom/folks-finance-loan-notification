@@ -9,10 +9,12 @@ const LayoutStyle = styled(Layout)`
   .ant-layout-header {
     background-color: white;
     display: flex;
+    border-bottom: 1px solid rgb(228, 228, 228);
   }
 
   .ant-layout-content {
     background-color: white;
+    padding: 96px 54px 0px 54px;
   }
 
   .ant-menu {
@@ -43,7 +45,7 @@ const MainLayout = ({ children }: any) => {
 
   return (
     <LayoutStyle>
-      <Header>
+      <Header style={{ position: "fixed", zIndex: 1, width: "100%" }}>
         <div className="logo-container">
           <img src="/logo.svg" alt="logo" />
         </div>

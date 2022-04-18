@@ -3,23 +3,19 @@ import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { accountState, defaultAccountState } from "../state";
 
-export const setAddresses = (addresses: string[], selectedAddress: string) => {
-  localStorage.setItem("addresses", JSON.stringify(addresses));
-  localStorage.setItem("selectedAddress", selectedAddress);
+export const saveAddress = (address: string) => {
+  localStorage.setItem("address", address);
 };
 
 export const removeAddress = () => {
-  localStorage.removeItem("addresses");
-  localStorage.removeItem("selectedAddress");
+  localStorage.removeItem("address");
 };
 
 export const getAccounts = () => {
-  const addresses = JSON.parse(localStorage.getItem("addresses") || "[]");
-  const selectedAddress = localStorage.getItem("selectedAddress") || "";
+  const address = localStorage.getItem("address") || "";
   return {
-    addresses,
-    selectedAddress,
-    isConnect: !!addresses.length && !!selectedAddress,
+    address,
+    isConnect: !!address,
   };
 };
 
@@ -32,11 +28,10 @@ export const useAccount = () => {
     setAccount(account);
   }, [setAccount]);
 
-  const connect = (addresses: string[], selectedAddress: string) => {
-    setAddresses(addresses, selectedAddress);
+  const connect = (address: string) => {
+    saveAddress(address);
     setAccount({
-      addresses,
-      selectedAddress,
+      address,
       isConnect: true,
     });
   };
@@ -47,18 +42,18 @@ export const useAccount = () => {
     navigate("/");
   };
 
-  const changeAddress = (selectedAddress: string) => {
-    setAccount({
-      ...account,
-      selectedAddress,
-    });
-    setAddresses(account.addresses, selectedAddress);
-  };
+  // const changeAddress = (address: string) => {
+  //   setAccount({
+  //     ...account,
+  //     address,
+  //   });
+  //   setAddresses(account.addresses, address);
+  // };
 
   return {
     account,
     connect,
-    changeAddress,
+    // changeAddress,
     disconnect,
   };
 };

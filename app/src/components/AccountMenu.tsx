@@ -1,11 +1,9 @@
 import styled from "styled-components";
 import Typography from "antd/lib/typography";
 import Button from "antd/lib/button";
-import Select from "antd/lib/select";
 import { formatAddress } from "../helpers";
 import { useAccount } from "../helpers/account";
 
-const { Option } = Select;
 const { Title } = Typography;
 
 const AccountMenuStyle = styled.div`
@@ -24,48 +22,20 @@ const AccountMenuStyle = styled.div`
   }
 
   .copy-address {
-    margin: 16px 0px;
+    margin-bottom: 16px;
   }
 `;
 
 const AccountMenu = () => {
-  const { account, disconnect, changeAddress } = useAccount();
-  const handleAddressChange = (address: string) => {
-    changeAddress(address);
-  };
-  const { addresses, selectedAddress } = account;
+  const { account, disconnect } = useAccount();
+
+  const { address } = account;
 
   return (
     <AccountMenuStyle>
-      <Title level={5}>Accounts</Title>
-      <Select
-        defaultValue={selectedAddress}
-        size="large"
-        dropdownStyle={{ borderRadius: 8 }}
-        onChange={handleAddressChange}
-      >
-        {addresses.map((address) => (
-          <Option
-            key={address}
-            value={address}
-            style={{
-              height: 42,
-              display: "flex",
-              alignItems: "center",
-              textAlign: "center",
-            }}
-          >
-            {formatAddress(address)}
-          </Option>
-        ))}
-      </Select>
-      <Title
-        level={5}
-        copyable={{ text: selectedAddress }}
-        className="copy-address"
-      >
+      <Title level={5} copyable={{ text: address }} className="copy-address">
         Copy Address: <br />
-        {formatAddress(selectedAddress)}
+        {formatAddress(address)}
       </Title>
       <Button shape="round" block size="large" onClick={disconnect}>
         Disconnect

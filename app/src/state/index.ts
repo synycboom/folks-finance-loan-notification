@@ -1,14 +1,12 @@
 import { atom } from "recoil";
 
 export interface IAccountState {
-  addresses: string[];
-  selectedAddress: string;
+  address: string;
   isConnect: boolean;
 }
 
 export const defaultAccountState: IAccountState = {
-  addresses: [],
-  selectedAddress: "",
+  address: "",
   isConnect: false,
 };
 

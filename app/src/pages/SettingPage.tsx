@@ -6,7 +6,9 @@ const SettingPageStyle = styled.div``;
 const SettingPage = () => {
   return (
     <SettingPageStyle>
-      <MainLayout>Setting</MainLayout>;
+      <MainLayout>
+        <h1>dsadads</h1>
+      </MainLayout>
     </SettingPageStyle>
   );
 };
