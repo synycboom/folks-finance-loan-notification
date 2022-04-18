@@ -3,8 +3,12 @@
 ## Development
 Setup environment files by copying .env.example and edit the variables
 ```shell
-$ cd services/<target_service>
-$ cat .env.example > .env
+$ make preparer.env
+```
+
+Setup nodejs dependencies
+```shell
+$ make preparer.node
 ```
 
 Run dependencies (zookeeper, kafka, mongodb) in background
