@@ -61,6 +61,67 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "GetUser",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/v1/users?publicAddress=6DPZBXO5OPQOFVJA25EOZTGV54GM2GPT56FO5HNNBWOCBOYEFPUWMILVV4",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"users"
+					],
+					"query": [
+						{
+							"key": "publicAddress",
+							"value": "6DPZBXO5OPQOFVJA25EOZTGV54GM2GPT56FO5HNNBWOCBOYEFPUWMILVV4"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateUser",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"publicAddress\": \"6DPZBXO5OPQOFVJA25EOZTGV54GM2GPT56FO5HNNBWOCBOYEFPUWMILVV4\",\r\n    \"discord\": \"1234\",\r\n    \"telegram\": \"t1234\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/users?=6DPZBXO5OPQOFVJA25EOZTGV54GM2GPT56FO5HNNBWOCBOYEFPUWMILVV4",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"users"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": "6DPZBXO5OPQOFVJA25EOZTGV54GM2GPT56FO5HNNBWOCBOYEFPUWMILVV4"
+						}
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"event": [
