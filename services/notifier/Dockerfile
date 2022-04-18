@@ -5,13 +5,13 @@ WORKDIR /app
 
 COPY . .
 
-RUN npm i
+RUN yarn install
 
-RUN npm run build
+RUN yarn build
 
 RUN rm -rf node_modules
 
-RUN npm i --only=production
+RUN yarn install --production
 
 # ------- RELEASE -------
 FROM node:14-alpine AS release
