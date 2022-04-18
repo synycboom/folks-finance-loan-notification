@@ -53,6 +53,7 @@ schema.methods.toResponse = function () {
 schema.methods.updateInfo = async function ({ discord, telegram }: UpdateUser) {
   this.discord = discord;
   this.telegram = telegram;
+  this.updatedAt = new Date();
 
   await this.save();
 };
