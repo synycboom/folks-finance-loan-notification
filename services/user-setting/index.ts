@@ -6,6 +6,7 @@ import express, { Application } from "express";
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import authRoutes from './apis/auth';
+import userRoutes from './apis/user';
 import logger from './utils/logger';
 import { errorHandler } from './errors';
 import initializeDb from './db';
@@ -25,6 +26,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use('/v1/auth', authRoutes);
+app.use('/v1/users', userRoutes);
 app.use(errorHandler);
 
 async function start() {

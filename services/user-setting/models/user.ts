@@ -1,6 +1,11 @@
 import mongoose from 'mongoose';
 import { NotFoundError } from '../errors';
 
+type UpdateUser = {
+  discord: string;
+  telegram: string;
+}
+
 const { Schema } = mongoose;
 
 const randomNonce = () => Math.floor(Math.random() * 10000);
@@ -29,11 +34,28 @@ const schema = new Schema({
   },
   createdAt: {
     type: Date,
+    default: () => new Date(),
   },
   updatedAt: {
     type: Date,
+    default: () => new Date(),
   },
 });
+
+schema.methods.toResponse = function () {
+  return {
+    publicAddress: this.publicAddress,
+    telegram: this.telegram,
+    discord: this.discord,
+  };
+};
+
+schema.methods.updateInfo = async function ({ discord, telegram }: UpdateUser) {
+  this.discord = discord;
+  this.telegram = telegram;
+
+  await this.save();
+};
 
 export const User = mongoose.model('User', schema);
 
@@ -57,6 +79,19 @@ export const findUser = async (publicAddress: string) => {
   if (!user) {
     throw new NotFoundError();
   }
+
+  return user;
+}
+
+export const updateUser = async (publicAddress: string, update: UpdateUser) => {
+  const user = await User.findOne({
+    publicAddress: publicAddress.toLowerCase(),
+  });
+  if (!user) {
+    throw new NotFoundError();
+  }
+
+  await user.updateInfo(update);
 
   return user;
 }
