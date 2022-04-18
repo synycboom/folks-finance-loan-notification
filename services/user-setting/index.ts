@@ -32,6 +32,9 @@ async function start() {
 
   await initializeDb();
 
+  app.get('/health', (_, res) => {
+    res.send('ok');
+  });
   app.listen(port, (): void => {
     logger.info(`running server on port ${port}`);
   });

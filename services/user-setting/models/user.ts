@@ -3,6 +3,8 @@ import { NotFoundError } from '../errors';
 
 const { Schema } = mongoose;
 
+const randomNonce = () => Math.floor(Math.random() * 10000);
+
 const schema = new Schema({
   publicAddress: {
     type: String,
@@ -23,7 +25,7 @@ const schema = new Schema({
   },
   nonce: {
     type: Number,
-    default: () => Math.floor(Math.random() * 1000000),
+    default: () => randomNonce(),
   },
   createdAt: {
     type: Date,
@@ -69,6 +71,6 @@ export const updateNonce = async (publicAddress: string) => {
   await User.updateOne({
     publicAddress: publicAddress.toLowerCase(),
   }, {
-    nonce: Math.floor(Math.random() * 1000000),
+    nonce: randomNonce(),
   });
 };

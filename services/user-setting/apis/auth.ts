@@ -2,9 +2,9 @@ import jwt from 'jsonwebtoken';
 import express from 'express';
 import asyncHandler from 'express-async-handler';
 import { validationResult, checkSchema } from 'express-validator';
-import { SignedTransaction, encodeObj, decodeSignedTransaction } from 'algosdk';
+import { encodeAddress, decodeAddress, encodeObj, decodeSignedTransaction, isValidAddress } from 'algosdk';
 import nacl from "tweetnacl";
-import isHexadecimal from 'validator/lib/isHexadecimal';
+import isBase64 from 'validator/lib/isBase64';
 import { ValidationError } from '../errors';
 import { createUser, updateNonce, findUser, getNonce } from '../models/user';
 import { requireEnv } from '../utils/env';
@@ -16,43 +16,40 @@ export const generateAccessToken = (userId: string, publicAddress: string) => {
   return jwt.sign({ userId, publicAddress }, requireEnv('TOKEN_SECRET'), { expiresIn: '1800s' });
 }
 
-const validateTokenAddress = (address: string) => {
-  return true;
-  // return address.startsWith('0x') && isHexadecimal(address) && address.length === 42;
-};
-
 const validateSignature = (sig: string) => {
-  return sig.startsWith('0x') && isHexadecimal(sig) && sig.length > 0;
+  return isBase64(sig);
 };
 
 const generateChallenge = (nonce: number) => {
-  return `I am signing my one-time nonce: ${nonce}`;
+  return `signing one-time nonce: ${nonce}`;
 };
 
-const publicAddressValidator = (publicAddress: string) => {
-  if (!validateTokenAddress(publicAddress)) {
-    throw new Error('publicAddress is not valid');
-  }
+const validatePublicAddress = (value: string) => {
+  decodeAddress(value);
 
   return true;
 };
 
-const verifySignedTransaction = (challenge: string, data: Uint8Array) => {
-  const stxn = decodeSignedTransaction(data);
+const verifySignedTransaction = (publicAddress: string, challenge: string, data: string) => {
+  const stxn = decodeSignedTransaction(Buffer.from(data, 'base64'));
   if (!stxn.sig) {
     return false;
   };
 
-  console.log("got note>>>>>>>>>>>>>>>>>");
-  console.log(stxn.txn.note);
-  console.log("expected note>>>>>>>>>>>>>>")
-  console.log(challenge);
   const pkBytes = stxn.txn.from.publicKey;
   const sigBytes = new Uint8Array(stxn.sig);
   const txnBytes = encodeObj(stxn.txn.get_obj_for_encoding());
   const msgBytes = new Uint8Array(txnBytes.length + 2);
+
   msgBytes.set(Buffer.from("TX"));
   msgBytes.set(txnBytes, 2);
+
+  if (Buffer.from(stxn.txn.note || []).toString() !== challenge) {
+    return false;
+  }
+  if (encodeAddress(pkBytes) !== publicAddress) {
+    return false;
+  }
 
   return nacl.sign.detached.verify(msgBytes, sigBytes, pkBytes);
 }
@@ -61,7 +58,7 @@ const challengeValidation = checkSchema(
   {
     publicAddress: {
       custom: {
-        options: publicAddressValidator,
+        options: validatePublicAddress,
       },
     },
   },
@@ -71,26 +68,27 @@ const challengeValidation = checkSchema(
 const loginValidation = checkSchema({
   publicAddress: {
     custom: {
-      options: publicAddressValidator,
+      options: validatePublicAddress,
     },
   },
   signedChallenge: {
     custom: {
       options: async (signedChallenge, { req }) => {
         const { publicAddress } = req.body;
+
         if (!validateSignature(signedChallenge)) {
           throw new Error('signedChallenge is not valid');
         }
-
-
+        if (!isValidAddress(publicAddress)) {
+          throw new Error('publicAddress is not valid');
+        }
 
         const nonce = await getNonce(publicAddress);
         const challenge = generateChallenge(nonce);
-        verifySignedTransaction(challenge, signedChallenge);
 
-        // if (address.toLowerCase() !== publicAddress.toLowerCase()) {
-        //   throw new Error('signedChallenge is not valid');
-        // }
+        if (!verifySignedTransaction(publicAddress, challenge, signedChallenge)) {
+          throw new Error('signedChallenge is not valid');
+        }
 
         return true;
       },
