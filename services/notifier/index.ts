@@ -3,6 +3,7 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
+import express, { Application } from "express";
 import { Kafka, logLevel } from 'kafkajs';
 import { requireEnv } from './utils/env';
 import logger, { WinstonLogCreator } from './utils/logger';
@@ -21,15 +22,19 @@ const consumer = kafka.consumer({
   groupId: kafkaConsumerGroup,
 });
 
+const app: Application = express();
+const port = process.env.PORT || 8080;
+
 async function start() {
+  logger.info('consumer is connecting to kafka broker(s)');
+
+  await consumer.connect();
   await consumer.subscribe({
     topic: kafkaTopic,
     fromBeginning: true,
   });
 
-  logger.info('consumer is connecting to kafka broker(s)');
 
-  await consumer.connect();
   await consumer.run({
     eachMessage: async ({ topic, partition, message }) => {
       console.log({
@@ -41,6 +46,13 @@ async function start() {
   });
 
   logger.info('consumer is running');
+
+  app.get('/health', (_, res) => {
+    res.send('ok');
+  });
+  app.listen(port, (): void => {
+    logger.info(`running server on port ${port}`);
+  });
 }
 
 start().catch((err) => {
@@ -71,6 +83,8 @@ errorTypes.forEach(type => {
 signalTraps.forEach(type => {
   process.once(type, async () => {
     try {
+      logger.warn(`process.once ${type}`)
+
       await consumer.disconnect();
     } finally {
       process.kill(process.pid, type);
