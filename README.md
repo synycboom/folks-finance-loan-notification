@@ -13,20 +13,25 @@ $ make preparer.node
 
 Run dependencies (zookeeper, kafka, mongodb) in background
 ```shell
-$ make deps-up
+$ make deps.up
+```
+
+Create a Kafka topic
+```shell
+$ make prepare.topic
 ```
 
 Run monitor-service locally
 ```shell
-$ make monitor-up
+$ make monitor.up
 ```
 
 Run notifier-service locally
 ```shell
-$ make notifier-up
+$ make notifier.up
 ```
 
 Run user-setting-service locally
 ```shell
-$ make user-setting-up
+$ make user-setting.up
 ```
