@@ -1,0 +1,92 @@
+{
+	"info": {
+		"_postman_id": "60c796e3-ee47-4e36-98dc-8b05b74a7da2",
+		"name": "Loan Notification",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"signedChallenge\": \"gqNzaWfEQOkFf7iOVUTOZUBdJJabNo1mxjbbN8HUXlzN59zd4H6IWPPvBu47w1WRWwtHNEZ1jG5vbqg2pdE2Ks1pbBSUdQqjdHhuiaNmZWXNA+iiZnbOAUFEA6NnZW6sdGVzdG5ldC12MS4womdoxCBIY7UYpLPITsgQ8i1PEIHLD3HwWaesIN7GL39w5Qk6IqJsds4BQUfrpG5vdGXEHHNpZ25pbmcgb25lLXRpbWUgbm9uY2U6IDE1ODGjcmN2xCDw35Dd3XPg4tUg10jszNXvDM0Z8++K7p2tDZwguwQr6aNzbmTEIPDfkN3dc+Di1SDXSOzM1e8MzRnz74runa0NnCC7BCvppHR5cGWjcGF5\",\r\n    \"publicAddress\": \"6DPZBXO5OPQOFVJA25EOZTGV54GM2GPT56FO5HNNBWOCBOYEFPUWMILVV4\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/auth/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetChallenge",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/v1/auth/challenge?publicAddress=6DPZBXO5OPQOFVJA25EOZTGV54GM2GPT56FO5HNNBWOCBOYEFPUWMILVV4",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"auth",
+						"challenge"
+					],
+					"query": [
+						{
+							"key": "publicAddress",
+							"value": "6DPZBXO5OPQOFVJA25EOZTGV54GM2GPT56FO5HNNBWOCBOYEFPUWMILVV4"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "host",
+			"value": ""
+		}
+	]
+}
