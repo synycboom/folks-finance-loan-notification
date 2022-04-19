@@ -21,7 +21,7 @@ const producer = kafka.producer({
   idempotent: false,
 });
 const app: Application = express();
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 8082;
 
 async function start() {
   logger.info('producer is connecting to kafka broker(s)');

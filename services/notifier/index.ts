@@ -23,7 +23,7 @@ const consumer = kafka.consumer({
 });
 
 const app: Application = express();
-const port = process.env.PORT || 8080;
+const port = process.env.PORT || 8081;
 
 async function start() {
   logger.info('consumer is connecting to kafka broker(s)');
