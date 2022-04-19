@@ -10,6 +10,8 @@ import userRoutes from './apis/user';
 import logger from './utils/logger';
 import { errorHandler } from './errors';
 import initializeDb from './db';
+import { authenticateToken } from './apis/middlewares';
+import './services/discord';
 
 const app: Application = express();
 const port = process.env.PORT || 8080;
@@ -26,7 +28,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use('/v1/auth', authRoutes);
-app.use('/v1/users', userRoutes);
+app.use('/v1/users', authenticateToken, userRoutes);
 app.use(errorHandler);
 
 async function start() {

@@ -2,31 +2,44 @@ import mongoose from 'mongoose';
 import { NotFoundError } from '../errors';
 
 type UpdateUser = {
-  discord: string;
-  telegram: string;
+  discord?: string;
+  telegram?: string;
 }
 
 const { Schema } = mongoose;
+
+const generateConnectToken = (address: string, token: number) => `${address}:${token}`;
 
 const randomNonce = () => Math.floor(Math.random() * 10000);
 
 const schema = new Schema({
   publicAddress: {
     type: String,
-    validate: {
-      validator: function(v: string) {
-        return v.toLocaleLowerCase() === v;
-      },
-      message: (props: any) => `${props.value} is not a lower case address`
-    },
+    default: '',
   },
-  discord: {
+  discordUserName: {
     type: String,
     default: '',
   },
-  telegram: {
+  discordUserId: {
     type: String,
     default: '',
+  },
+  discordNonce: {
+    type: Number,
+    default: () => randomNonce(),
+  },
+  telegramUsername: {
+    type: String,
+    default: '',
+  },
+  telegramChatId: {
+    type: String,
+    default: '',
+  },
+  telegramNonce: {
+    type: Number,
+    default: () => randomNonce(),
   },
   nonce: {
     type: Number,
@@ -45,13 +58,33 @@ const schema = new Schema({
 schema.methods.toResponse = function () {
   return {
     publicAddress: this.publicAddress,
-    telegram: this.telegram,
-    discord: this.discord,
+    discordConnectToken: this.generateDiscordConnectToken(),
+    telegramConnectToken: this.generateTelegramConnectToken(),
+    telegramUsername: this.telegramUsername,
+    telegramChatId: this.telegramChatId,
+    discordUserName: this.discordUserName,
+    discordUserId: this.discordUserId,
   };
 };
 
-schema.methods.updateInfo = async function ({ discord, telegram }: UpdateUser) {
-  this.discord = discord;
+schema.methods.generateDiscordConnectToken = function () {
+  return generateConnectToken(this.publicAddress, this.discordNonce);
+};
+
+schema.methods.generateTelegramConnectToken = function () {
+  return generateConnectToken(this.publicAddress, this.telegramNonce);
+};
+
+schema.methods.updateDiscord = async function (discordUserName: string, discordUserId: string) {
+  this.discordUserName = discordUserName;
+  this.discordUserId = discordUserId;
+  this.discordNonce = randomNonce();
+  this.updatedAt = new Date();
+
+  await this.save();
+};
+
+schema.methods.updateTelegram = async function (telegram: string) {
   this.telegram = telegram;
   this.updatedAt = new Date();
 
@@ -62,7 +95,7 @@ export const User = mongoose.model('User', schema);
 
 export const createUser = async (publicAddress: string) => {
   const filter = {
-    publicAddress: publicAddress.toLowerCase(),
+    publicAddress: publicAddress,
   };
   const update = {};
   const user = await User.findOneAndUpdate(filter, update, {
@@ -75,24 +108,11 @@ export const createUser = async (publicAddress: string) => {
 
 export const findUser = async (publicAddress: string) => {
   const user = await User.findOne({
-    publicAddress: publicAddress.toLowerCase(),
+    publicAddress: publicAddress,
   });
   if (!user) {
     throw new NotFoundError();
   }
-
-  return user;
-}
-
-export const updateUser = async (publicAddress: string, update: UpdateUser) => {
-  const user = await User.findOne({
-    publicAddress: publicAddress.toLowerCase(),
-  });
-  if (!user) {
-    throw new NotFoundError();
-  }
-
-  await user.updateInfo(update);
 
   return user;
 }
@@ -105,7 +125,7 @@ export const getNonce = async (publicAddress: string) => {
 
 export const updateNonce = async (publicAddress: string) => {
   await User.updateOne({
-    publicAddress: publicAddress.toLowerCase(),
+    publicAddress: publicAddress,
   }, {
     nonce: randomNonce(),
   });

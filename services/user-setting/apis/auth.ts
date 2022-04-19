@@ -8,6 +8,7 @@ import isBase64 from 'validator/lib/isBase64';
 import { ValidationError } from '../errors';
 import { createUser, updateNonce, findUser, getNonce } from '../models/user';
 import { requireEnv } from '../utils/env';
+import { generateChallenge } from '../utils/auth';
 import { authenticateToken } from './middlewares';
 
 const router = express.Router();
@@ -18,10 +19,6 @@ export const generateAccessToken = (userId: string, publicAddress: string) => {
 
 const validateSignature = (sig: string) => {
   return isBase64(sig);
-};
-
-const generateChallenge = (nonce: number) => {
-  return `signing one-time nonce: ${nonce}`;
 };
 
 const validatePublicAddress = (value: string) => {
