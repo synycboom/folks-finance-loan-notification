@@ -4,12 +4,10 @@ import Popover from "antd/lib/popover";
 import { useState } from "react";
 import styled from "styled-components";
 import CaretDownOutlined from "@ant-design/icons/lib/icons/CaretDownOutlined";
-import MyAlgoWallet from "@randlabs/myalgo-connect";
 import { useAccount } from "../helpers/account";
-import { formatAddress } from "../helpers";
+import { formatAddress, myAlgoConnect, signMessage } from "../helpers";
 import AccountMenu from "./AccountMenu";
-
-const myAlgoWallet = new MyAlgoWallet();
+import { getChallengeCode, login } from "../helpers/api";
 
 const Style = styled.div`
   .ant-btn {
@@ -52,11 +50,15 @@ const ConnectWalletButton = () => {
   };
 
   const algoConnect = async () => {
-    const [account] = await myAlgoWallet.connect({
+    const [account] = await myAlgoConnect.connect({
       shouldSelectOneAccount: true,
     });
-    connect(account.address);
+    const address = account.address;
+    const challenge = await getChallengeCode(address);
+    const tx = await signMessage(address, challenge);
+    await login(address, tx);
     hideModal();
+    connect(address);
   };
 
   return (

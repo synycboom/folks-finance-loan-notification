@@ -14,6 +14,8 @@ const MyBorrowPage = () => {
         <Title level={3}>My Borrows</Title>
         <BorrowCard />
         <BorrowCard />
+        <BorrowCard />
+        <BorrowCard />
       </MainLayout>
     </MyBorrowPageStyle>
   );

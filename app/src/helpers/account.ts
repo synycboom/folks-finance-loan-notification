@@ -1,59 +1,52 @@
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { accountState, defaultAccountState } from "../state";
+import { checkAuthen, logout } from "./api";
 
-export const saveAddress = (address: string) => {
-  localStorage.setItem("address", address);
-};
-
-export const removeAddress = () => {
-  localStorage.removeItem("address");
-};
-
-export const getAccounts = () => {
-  const address = localStorage.getItem("address") || "";
-  return {
-    address,
-    isConnect: !!address,
-  };
+export const getAccounts = async () => {
+  try {
+    const address = await checkAuthen();
+    return {
+      address,
+      isConnect: true,
+    };
+  } catch {
+    return {
+      address: "",
+      isConnect: false,
+    };
+  }
 };
 
 export const useAccount = () => {
   const [account, setAccount] = useRecoilState(accountState);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const account = getAccounts();
+  const checkAuth = async () => {
+    const account = await getAccounts();
     setAccount(account);
-  }, [setAccount]);
+    return account;
+  };
 
   const connect = (address: string) => {
-    saveAddress(address);
     setAccount({
       address,
       isConnect: true,
     });
+    navigate("/my-borrows");
   };
 
-  const disconnect = () => {
+  const disconnect = async () => {
+    await logout();
+    window.localStorage.removeItem("token");
     setAccount(defaultAccountState);
-    removeAddress();
     navigate("/");
   };
-
-  // const changeAddress = (address: string) => {
-  //   setAccount({
-  //     ...account,
-  //     address,
-  //   });
-  //   setAddresses(account.addresses, address);
-  // };
 
   return {
     account,
     connect,
-    // changeAddress,
     disconnect,
+    checkAuth,
   };
 };

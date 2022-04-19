@@ -1,29 +1,27 @@
-// import algosdk, { SuggestedParams } from "algosdk";
-// import MyAlgoWallet from "@randlabs/myalgo-connect";
+import MyAlgoConnect from "@randlabs/myalgo-connect";
+import { Algodv2, makePaymentTxnWithSuggestedParamsFromObject } from "algosdk";
+import setting from "../setting";
 
-/*Warning: Browser will block pop-up if user doesn't trigger myAlgoWallet.connect() with a button interation */
-// export const signTransaction = async (
-//   from: string,
-//   to: string,
-//   amount: number | bigint,
-//   suggestedParams: SuggestedParams
-//   ) => {
-//     try {
-//     const algodClient = new algosdk.Algodv2("", "https://api.algoexplorer.io/", "");
-//     const myAlgoWallet = new MyAlgoWallet();
-//     const txn = algosdk.makePaymentTxnWithSuggestedParams(
-//       from,
-//       to,
-//       amount,
-//       suggestedParams
-//     );
-//     const signedTxn = await myAlgoWallet.signTransaction(txn.toByte());
-//     const response = await algodClient.sendRawTransaction(signedTxn.blob).do();
-//     console.log(response);
-//   } catch (err) {
-//     console.error(err);
-//   }
-// };
+const encoder = new TextEncoder();
+
+export const myAlgoConnect = new MyAlgoConnect();
+
+export const signMessage = async (address: string, message: string) => {
+  const algoClient = new Algodv2("", setting.ALGO_CLIENT, "");
+  const params = await algoClient.getTransactionParams().do();
+  const txn = makePaymentTxnWithSuggestedParamsFromObject({
+    suggestedParams: params,
+    from: address,
+    to: address,
+    amount: 0,
+    note: encoder.encode(message),
+  });
+
+  const stx = await myAlgoConnect.signTransaction(txn.toByte());
+  const b64Stx = Buffer.from(stx.blob).toString("base64");
+
+  return b64Stx;
+};
 
 export const formatAddress = (address: string): string => {
   const length = address.length;

@@ -3,12 +3,12 @@
 ## Development
 Setup environment files by copying .env.example and edit the variables
 ```shell
-$ make preparer.env
+$ make prepare.env
 ```
 
 Setup nodejs dependencies
 ```shell
-$ make preparer.node
+$ make prepare.node
 ```
 
 Run dependencies (zookeeper, kafka, mongodb) in background

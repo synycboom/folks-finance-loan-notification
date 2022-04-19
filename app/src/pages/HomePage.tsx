@@ -1,8 +1,5 @@
 import styled from "styled-components";
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import ConnectWalletButton from "../components/ConnectWalletButton";
-import { useAccount } from "../helpers/account";
 
 const HomePageStyle = styled.div`
   height: 100vh;
@@ -19,15 +16,6 @@ const HomePageStyle = styled.div`
 `;
 
 const HomePage = () => {
-  const navigate = useNavigate();
-  const { account } = useAccount();
-
-  useEffect(() => {
-    if (account.isConnect) {
-      navigate("/my-borrows");
-    }
-  }, [navigate, account]);
-
   return (
     <HomePageStyle>
       <img src="/logo.svg" alt="logo" />
