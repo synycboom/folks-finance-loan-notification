@@ -6,8 +6,8 @@ import { NotFoundError } from '../errors';
 import logger from '../utils/logger';
 
 const INVOCATION_STRING = '!verify';
-const BOT_NAME = 'folk-finance-loan-notification';
 const INVALID_CONNECT_TOKEN = `Oops! That doesn't look right. It looks like this 6DPZBXO5OPQOFVJA25EOZTGV54GM2GPT56FO5HNNBWOCBOYEFPUWMILVV4:1234`;
+const INVALID_NONCE = `Oops! Invalid nonce`;
 const INVALID_PUBLIC_ADDRESS = `Oops! Your discord connect token is not attached with any Algorand wallet`;
 const INTERNAL_ERROR = `Oops! Something went wrong :(`;
 const REPLY_MESSAGE = 'Please check your DMs';
@@ -15,6 +15,8 @@ const PROMPT_MESSAGE = 'Hi there! Lets get you verified. Reply with your wallet 
 
 // Create a new client instance
 const client = new Client();
+const discordToken = requireEnv('DISCORD_TOKEN');
+const discordBotName = requireEnv('DISCORD_BOT_NAME');
 
 // When the client is ready, run this code (only once)
 client.once('ready', () => {
@@ -38,7 +40,7 @@ client.on("message", async (message) => {
       id: userId
     } = message.author;
 
-    if (handle === BOT_NAME) {
+    if (handle === discordBotName) {
       return;
     }
 
@@ -62,7 +64,7 @@ client.on("message", async (message) => {
       const user = await findUser(publicAddress);
 
       if (discordNonce !== user.discordNonce.toString()) {
-        message.channel.send(INVALID_CONNECT_TOKEN);
+        message.channel.send(INVALID_NONCE);
 
         return;
       }
@@ -85,7 +87,7 @@ client.on("message", async (message) => {
 });
 
 // Login to Discord with your client's token
-client.login(requireEnv('DISCORD_TOKEN'));
+client.login(discordToken);
 
 export const sendMessage = async (publicAddress: string, message: string) => {
   const user = await findUser(publicAddress);
