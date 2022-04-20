@@ -1,21 +1,30 @@
-import jwt from 'jsonwebtoken';
-import express from 'express';
-import asyncHandler from 'express-async-handler';
-import { validationResult, checkSchema } from 'express-validator';
-import { encodeAddress, decodeAddress, encodeObj, decodeSignedTransaction, isValidAddress } from 'algosdk';
+import jwt from "jsonwebtoken";
+import express from "express";
+import asyncHandler from "express-async-handler";
+import { validationResult, checkSchema } from "express-validator";
+import {
+  encodeAddress,
+  decodeAddress,
+  encodeObj,
+  decodeSignedTransaction,
+  isValidAddress,
+} from "algosdk";
 import nacl from "tweetnacl";
-import isBase64 from 'validator/lib/isBase64';
-import { ValidationError } from '../errors';
-import { createUser, updateNonce, findUser, getNonce } from '../models/user';
-import { requireEnv } from '../utils/env';
-import { generateChallenge } from '../utils/auth';
-import { authenticateToken } from './middlewares';
+import { Buffer } from "buffer";
+import isBase64 from "validator/lib/isBase64";
+import { ValidationError } from "../errors";
+import { createUser, updateNonce, findUser, getNonce } from "../models/user";
+import { requireEnv } from "../utils/env";
+import { generateChallenge } from "../utils/auth";
+import { authenticateToken } from "./middlewares";
 
 const router = express.Router();
 
 export const generateAccessToken = (userId: string, publicAddress: string) => {
-  return jwt.sign({ userId, publicAddress }, requireEnv('TOKEN_SECRET'), { expiresIn: '1800s' });
-}
+  return jwt.sign({ userId, publicAddress }, requireEnv("TOKEN_SECRET"), {
+    expiresIn: "1800s",
+  });
+};
 
 const validateSignature = (sig: string) => {
   return isBase64(sig);
@@ -27,11 +36,15 @@ const validatePublicAddress = (value: string) => {
   return true;
 };
 
-const verifySignedTransaction = (publicAddress: string, challenge: string, data: string) => {
-  const stxn = decodeSignedTransaction(Buffer.from(data, 'base64'));
+const verifySignedTransaction = (
+  publicAddress: string,
+  challenge: string,
+  data: string
+) => {
+  const stxn = decodeSignedTransaction(Buffer.from(data, "base64"));
   if (!stxn.sig) {
     return false;
-  };
+  }
 
   const pkBytes = stxn.txn.from.publicKey;
   const sigBytes = new Uint8Array(stxn.sig);
@@ -49,7 +62,7 @@ const verifySignedTransaction = (publicAddress: string, challenge: string, data:
   }
 
   return nacl.sign.detached.verify(msgBytes, sigBytes, pkBytes);
-}
+};
 
 const challengeValidation = checkSchema(
   {
@@ -59,7 +72,7 @@ const challengeValidation = checkSchema(
       },
     },
   },
-  ['query'],
+  ["query"]
 );
 
 const loginValidation = checkSchema({
@@ -74,17 +87,19 @@ const loginValidation = checkSchema({
         const { publicAddress } = req.body;
 
         if (!validateSignature(signedChallenge)) {
-          throw new Error('signedChallenge is not valid');
+          throw new Error("signedChallenge is not valid");
         }
         if (!isValidAddress(publicAddress)) {
-          throw new Error('publicAddress is not valid');
+          throw new Error("publicAddress is not valid");
         }
 
         const nonce = await getNonce(publicAddress);
         const challenge = generateChallenge(nonce);
 
-        if (!verifySignedTransaction(publicAddress, challenge, signedChallenge)) {
-          throw new Error('signedChallenge is not valid');
+        if (
+          !verifySignedTransaction(publicAddress, challenge, signedChallenge)
+        ) {
+          throw new Error("signedChallenge is not valid");
         }
 
         return true;
@@ -94,7 +109,7 @@ const loginValidation = checkSchema({
 });
 
 router.get(
-  '/challenge',
+  "/challenge",
   challengeValidation,
   asyncHandler(async (req, res) => {
     const errors = validationResult(req);
@@ -102,18 +117,18 @@ router.get(
       throw new ValidationError(errors.array());
     }
 
-    const publicAddress = req.query.publicAddress?.toString() || '';
+    const publicAddress = req.query.publicAddress?.toString() || "";
     const user = await createUser(publicAddress);
     const challenge = generateChallenge(user.nonce);
 
     res.status(200).json({
       challenge,
     });
-  }),
+  })
 );
 
 router.post(
-  '/login',
+  "/login",
   loginValidation,
   asyncHandler(async (req, res) => {
     const errors = validationResult(req);
@@ -126,21 +141,21 @@ router.post(
     const token = generateAccessToken(user._id, publicAddress);
     await updateNonce(publicAddress);
 
-    res.cookie('jwt', token, { httpOnly: true }).status(200).json({
+    res.cookie("jwt", token, { httpOnly: true }).status(200).json({
       token,
     });
-  }),
+  })
 );
 
 router.post(
-  '/logout',
+  "/logout",
   asyncHandler(async (req, res) => {
-    res.clearCookie('jwt').status(204).end();
-  }),
+    res.clearCookie("jwt").status(204).end();
+  })
 );
 
 router.get(
-  '/check',
+  "/check",
   authenticateToken,
   asyncHandler(async (req, res) => {
     res.status(200).json({
@@ -148,7 +163,7 @@ router.get(
       // @ts-ignore
       publicAddress: req.publicAddress,
     });
-  }),
+  })
 );
 
 export default router;

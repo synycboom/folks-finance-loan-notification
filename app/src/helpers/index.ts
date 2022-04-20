@@ -1,14 +1,21 @@
 import MyAlgoConnect from "@randlabs/myalgo-connect";
-import { Algodv2, makePaymentTxnWithSuggestedParamsFromObject } from "algosdk";
+import {
+  Algodv2,
+  makePaymentTxnWithSuggestedParamsFromObject,
+  Indexer,
+} from "algosdk";
+import { Buffer } from "buffer";
+
 import setting from "../setting";
 
-const encoder = new TextEncoder();
-
 export const myAlgoConnect = new MyAlgoConnect();
+export const algodClient = new Algodv2("", setting.ALGO_CLIENT, 443);
+export const indexerClient = new Indexer("", setting.INDEXER_CLIENT, 443);
 
 export const signMessage = async (address: string, message: string) => {
-  const algoClient = new Algodv2("", setting.ALGO_CLIENT, "");
-  const params = await algoClient.getTransactionParams().do();
+  const encoder = new TextEncoder();
+
+  const params = await algodClient.getTransactionParams().do();
   const txn = makePaymentTxnWithSuggestedParamsFromObject({
     suggestedParams: params,
     from: address,

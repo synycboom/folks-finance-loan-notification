@@ -7,6 +7,7 @@ import Title from "antd/lib/typography/Title";
 import styled from "styled-components";
 import { TOKEN } from "../constants/token";
 import DecimalSlider from "./DecimalSlider";
+import { Loan } from "../types";
 
 const BorrowCardStyle = styled(Card)`
   border-radius: 8px;
@@ -14,6 +15,7 @@ const BorrowCardStyle = styled(Card)`
 
   img {
     width: 24px;
+    margin-right: 8px;
   }
 
   .ant-switch {
@@ -21,7 +23,14 @@ const BorrowCardStyle = styled(Card)`
   }
 `;
 
-const BorrowCard = () => {
+const BorrowCard = ({ loan }: { loan: Loan }) => {
+  const {
+    borrowBalance,
+    collateralBalance,
+    healthFactor,
+    borrowToken,
+    collateralToken,
+  } = loan;
   return (
     <BorrowCardStyle>
       <Row>
@@ -32,12 +41,14 @@ const BorrowCard = () => {
         </Col>
         <Col span={5}>
           <Title level={5}>
-            <img src={TOKEN["USDC"].logoUrl} alt="logo" /> 123 USDC
+            <img src={TOKEN[borrowToken].logoUrl} alt="logo" /> {borrowBalance}{" "}
+            {borrowToken}
           </Title>
           <Title level={5}>
-            <img src={TOKEN["ALGO"].logoUrl} alt="logo" /> 321 ALGO
+            <img src={TOKEN[collateralToken].logoUrl} alt="logo" />{" "}
+            {collateralBalance} {collateralToken}
           </Title>
-          <Title level={5}>1.2</Title>
+          <Title level={5}>{healthFactor}</Title>
         </Col>
         <Col span={1}>
           <Divider type="vertical" style={{ height: "100%" }} />
