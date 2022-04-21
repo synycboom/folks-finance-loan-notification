@@ -19,7 +19,7 @@ router.post(
     }
 
     const notification = await createNotificationSetting(req.body);
-    console.log(notification);
+
     res.status(200).json(notification);
   })
 );

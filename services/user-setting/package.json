@@ -33,6 +33,7 @@
     "folks-finance-js-sdk": "https://github.com/Folks-Finance/folks-finance-js-sdk",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.3.0",
+    "telegraf": "^4.7.0",
     "tweetnacl": "^1.0.3",
     "validator": "^13.7.0",
     "winston": "^3.7.2"

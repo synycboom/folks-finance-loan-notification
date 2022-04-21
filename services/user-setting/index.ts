@@ -13,6 +13,7 @@ import { errorHandler } from "./errors";
 import initializeDb from "./db";
 import { authenticateToken } from "./apis/middlewares";
 import "./services/discord";
+import "./services/telegram";
 
 const app: Application = express();
 const port = process.env.PORT || 8080;

@@ -75,17 +75,19 @@ schema.methods.generateTelegramConnectToken = function () {
   return generateConnectToken(this.publicAddress, this.telegramNonce);
 };
 
-schema.methods.updateDiscord = async function (discordUserName: string, discordUserId: string) {
-  this.discordUserName = discordUserName;
-  this.discordUserId = discordUserId;
+schema.methods.updateDiscord = async function (username: string, userId: string) {
+  this.discordUserName = username;
+  this.discordUserId = userId;
   this.discordNonce = randomNonce();
   this.updatedAt = new Date();
 
   await this.save();
 };
 
-schema.methods.updateTelegram = async function (telegram: string) {
-  this.telegram = telegram;
+schema.methods.updateTelegram = async function (username: string, chatId: string) {
+  this.telegramUsername = username;
+  this.telegramChatId = chatId;
+  this.telegramNonce = randomNonce();
   this.updatedAt = new Date();
 
   await this.save();

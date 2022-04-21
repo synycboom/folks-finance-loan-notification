@@ -4,14 +4,16 @@ import { requireEnv } from '../utils/env';
 import { findUser } from '../models/user';
 import { NotFoundError } from '../errors';
 import logger from '../utils/logger';
+import {
+  INVALID_CONNECT_TOKEN_MESSAGE,
+  INVALID_NONCE_MESSAGE,
+  INVALID_PUBLIC_ADDRESS_MESSAGE,
+  INTERNAL_ERROR_MESSAGE,
+  PROMPT_MESSAGE,
+  REPLY_MESSAGE,
+} from './messages';
 
-const INVOCATION_STRING = '!verify';
-const INVALID_CONNECT_TOKEN = `Oops! That doesn't look right. It looks like this 6DPZBXO5OPQOFVJA25EOZTGV54GM2GPT56FO5HNNBWOCBOYEFPUWMILVV4:1234`;
-const INVALID_NONCE = `Oops! Invalid nonce`;
-const INVALID_PUBLIC_ADDRESS = `Oops! Your discord connect token is not attached with any Algorand wallet`;
-const INTERNAL_ERROR = `Oops! Something went wrong :(`;
-const REPLY_MESSAGE = 'Please check your DMs';
-const PROMPT_MESSAGE = 'Hi there! Lets get you verified. Reply with your wallet connect token. It looks like this "6DPZBXO5OPQOFVJA25EOZTGV54GM2GPT56FO5HNNBWOCBOYEFPUWMILVV4:1234"';
+const INVOCATION_STRING_MESSAGE = '!verify';
 
 // Create a new client instance
 const client = new Client();
@@ -25,7 +27,7 @@ client.once('ready', () => {
 
 client.on("message", async (message) => {
   // INVOCATION IN PULIC CHANNEL
-  if (message.content === INVOCATION_STRING) {
+  if (message.content === INVOCATION_STRING_MESSAGE) {
     message.reply(REPLY_MESSAGE);
     message.author.send(PROMPT_MESSAGE);
 
@@ -44,17 +46,17 @@ client.on("message", async (message) => {
       return;
     }
 
-    const discordToken = message.content;
-    const split = discordToken.split(':');
+    const connectToken = message.content.replace('!connect ', '').trim();
+    const split = connectToken.split(':');
     if (split.length !== 2) {
-      message.channel.send(INVALID_CONNECT_TOKEN);
+      message.channel.send(INVALID_CONNECT_TOKEN_MESSAGE);
 
       return;
     }
 
     const [publicAddress, discordNonce] = split;
     if (!isValidAddress(publicAddress)) {
-      message.channel.send(INVALID_CONNECT_TOKEN);
+      message.channel.send(INVALID_CONNECT_TOKEN_MESSAGE);
 
       return;
     }
@@ -64,7 +66,7 @@ client.on("message", async (message) => {
       const user = await findUser(publicAddress);
 
       if (discordNonce !== user.discordNonce.toString()) {
-        message.channel.send(INVALID_NONCE);
+        message.channel.send(INVALID_NONCE_MESSAGE);
 
         return;
       }
@@ -75,13 +77,13 @@ client.on("message", async (message) => {
       message.channel.send(`Your Algorand wallet ${publicAddress} is connected with ${username}`);
     } catch (err: any) {
       if (err instanceof NotFoundError) {
-        message.channel.send(INVALID_PUBLIC_ADDRESS);
+        message.channel.send(INVALID_PUBLIC_ADDRESS_MESSAGE);
 
         return;
       }
 
       logger.error(err.message, { stack: err.stack });
-      message.channel.send(INTERNAL_ERROR);
+      message.channel.send(INTERNAL_ERROR_MESSAGE);
     }
   }
 });
