@@ -1,10 +1,10 @@
-// import {
-//   TestnetTokenPairs,
-//   getLoanInfo,
-//   TestnetOracle,
-//   TestnetTokenPairKey,
-//   TestnetPoolKey,
-// } from "folks-finance-js-sdk/src";
+import {
+  TestnetTokenPairs,
+  getLoanInfo,
+  TestnetOracle,
+  TestnetTokenPairKey,
+  TestnetPoolKey,
+} from "folks-finance-js-sdk";
 import { Indexer } from "algosdk";
 import { getNotifications, NotificationSetting } from "../models/notification";
 import { requireEnv } from "./env";
@@ -19,21 +19,21 @@ export const startMonitorLoans = async () => {
   }
 };
 
-// const checkLoanHealthFactor = async () => {
-//   const notifications = await getNotifications();
-//   for (const notification of notifications) {
-//     const { escrowAddress, tokenPair, targetHealthFactor } = notification;
-//     // const { healthFactor } = await getLoan(tokenPair, escrowAddress);
-//     // const currentHealthFactor = convertBigIntToNumber(healthFactor, 14);
-//     // console.log(targetHealthFactor, currentHealthFactor);
-//   }
-// };
+const checkLoanHealthFactor = async () => {
+  const notifications = await getNotifications();
+  for (const notification of notifications) {
+    const { escrowAddress, tokenPair, targetHealthFactor } = notification;
+    // const { healthFactor } = await getLoan(tokenPair, escrowAddress);
+    // const currentHealthFactor = convertBigIntToNumber(healthFactor, 14);
+    // console.log(targetHealthFactor, currentHealthFactor);
+  }
+};
 
-// const getLoan = async (pairKey: TestnetTokenPairKey, escrowAddress: string) => {
-//   const tokenPair = TestnetTokenPairs[pairKey];
+const getLoan = async (pairKey: TestnetTokenPairKey, escrowAddress: string) => {
+  const tokenPair = TestnetTokenPairs[pairKey];
 
-//   return getLoanInfo(indexerClient, tokenPair, TestnetOracle, escrowAddress);
-// };
+  return getLoanInfo(indexerClient, tokenPair, TestnetOracle, escrowAddress);
+};
 
 function sleep(ms: number) {
   return new Promise((resolve) => {

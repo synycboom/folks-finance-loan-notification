@@ -4,10 +4,10 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "dev": "ts-node-dev ./index.ts",
-    "start": "tsc && node ./dist/index.js",
-    "build": "tsc",
-    "postinstall": "yarn patch-package"
+    "dev": "yarn compile-folk-js && ts-node-dev ./index.ts",
+    "start": "yarn compile-folk-js && tsc && node ./dist/index.js",
+    "build": "yarn compile-folk-js && tsc",
+    "compile-folk-js": "./scripts/compile-folk-js.sh"
   },
   "keywords": [],
   "author": "",
@@ -18,7 +18,6 @@
     "express": "^4.17.3",
     "kafkajs": "^1.16.0",
     "winston": "^3.7.2",
-    "patch-package": "^6.4.7",
     "folks-finance-js-sdk": "https://github.com/Folks-Finance/folks-finance-js-sdk"
   },
   "devDependencies": {
