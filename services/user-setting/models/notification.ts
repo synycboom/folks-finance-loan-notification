@@ -1,19 +1,49 @@
-import mongoose from 'mongoose';
-import { TestnetTokenPairs } from 'folks-finance-js-sdk/src';
-import { NotFoundError } from '../errors';
+import mongoose from "mongoose";
 
 const { Schema } = mongoose;
 
-console.log(TestnetTokenPairs);
+type NotificationSetting = {
+  userAddress: string;
+  notifyDiscord: boolean;
+  tokenPair: string;
+  notifyTelegram: boolean;
+  targetHealthFactor: number;
+  currentHealthFactor: number;
+  escrowAddress: string;
+};
+
 const schema = new Schema({
-  publicAddress: {
+  userAddress: {
     type: String,
-    validate: {
-      validator: function(v: string) {
-        return v.toLocaleLowerCase() === v;
-      },
-      message: (props: any) => `${props.value} is not a lower case address`
-    },
+    default: "",
+  },
+  escrowAddress: {
+    type: String,
+    default: "",
+  },
+  tokenPair: {
+    type: String,
+    default: "",
+  },
+  notifyDiscord: {
+    type: Boolean,
+    default: false,
+  },
+  notifyTelegram: {
+    type: Boolean,
+    default: false,
+  },
+  targetHealthFactor: {
+    type: Number,
+    default: 0,
+  },
+  currentHealthFactor: {
+    type: Number,
+    default: 0,
+  },
+  hasNotified: {
+    type: Boolean,
+    default: false,
   },
   createdAt: {
     type: Date,
@@ -25,18 +55,72 @@ const schema = new Schema({
   },
 });
 
+export const NotificationSetting = mongoose.model(
+  "NotificationSetting",
+  schema
+);
+
 schema.methods.toResponse = function () {
   return {
-    publicAddress: this.publicAddress,
-    telegram: this.telegram,
-    discord: this.discord,
+    userAddress: this.userAddress,
+    escrowAddress: this.escrowAddress,
+    tokenPair: this.tokenPair,
+    notifyDiscord: this.notifyDiscord,
+    notifyTelegram: this.notifyTelegram,
+    targetHealthFactor: this.targetHealthFactor,
+    currentHealthFactor: this.currentHealthFactor,
+    hasNotified: this.hasNotified,
   };
 };
 
-schema.methods.updateInfo = async function () {
+schema.methods.updateSetting = async function (
+  notifyDiscord: boolean,
+  notifyTelegram: boolean,
+  targetHealthFactor: number
+) {
+  this.notifyDiscord = notifyDiscord;
+  this.notifyTelegram = notifyTelegram;
+  this.targetHealthFactor = targetHealthFactor;
   this.updatedAt = new Date();
 
   await this.save();
 };
 
-export const NotificationSetting = mongoose.model('NotificationSetting', schema);
+export const createNotificationSetting = async (data: NotificationSetting) => {
+  const {
+    userAddress,
+    notifyDiscord,
+    tokenPair,
+    notifyTelegram,
+    targetHealthFactor,
+    currentHealthFactor,
+    escrowAddress,
+  } = data;
+  const filter = {
+    userAddress,
+    escrowAddress,
+    tokenPair,
+  };
+  const update = {
+    notifyDiscord,
+    notifyTelegram,
+    targetHealthFactor,
+    currentHealthFactor,
+  };
+  const notification = await NotificationSetting.findOneAndUpdate(
+    filter,
+    update,
+    {
+      upsert: true,
+      new: true,
+    }
+  );
+
+  return notification;
+};
+
+export const findNotificationsByAddress = (address: string) => {
+  return NotificationSetting.find({
+    userAddress: address,
+  });
+};

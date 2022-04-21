@@ -8,6 +8,7 @@ import { getLoans } from "../helpers/loan";
 import { useAccount } from "../helpers/account";
 import { Loan } from "../types";
 import LoadingOutlined from "@ant-design/icons/LoadingOutlined";
+import { getNotifications } from "../helpers/api";
 
 const { Title } = Typography;
 
@@ -30,11 +31,41 @@ const MyBorrowPage = () => {
   const { account } = useAccount();
   const [loans, setLoans] = useState<Loan[] | null>();
 
+  const address = account.address;
   useEffect(() => {
-    if (account.address) {
-      getLoans(account.address).then((loans) => setLoans(loans));
+    console.log(address);
+    if (address) {
+      getLoanAndNotifications(address);
     }
-  }, [account.address]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [address]);
+
+  const getLoanAndNotifications = async (address: string) => {
+    const [loans, notifications] = await Promise.all([
+      getLoans(account.address),
+      getNotifications(),
+    ]);
+
+    const newLoans = loans.map((loan) => {
+      const notification = notifications.find(
+        (notification) =>
+          notification.escrowAddress === loan.escrowAddress &&
+          notification.userAddress === loan.userAddress &&
+          notification.tokenPair === loan.tokenPair
+      );
+      const setting = notification && {
+        notifyDiscord: notification.notifyDiscord,
+        notifyTelegram: notification.notifyTelegram,
+        targetHealthFactor: notification.targetHealthFactor,
+      };
+      return {
+        ...loan,
+        setting,
+      };
+    });
+
+    setLoans(newLoans);
+  };
 
   if (loans) console.log(loans[0]);
 
@@ -42,21 +73,14 @@ const MyBorrowPage = () => {
     <MyBorrowPageStyle>
       <MainLayout>
         <Title level={3}>My Borrows</Title>
-        {/* <BorrowCard
-          loan={{
-            borrowBalance: 4.340998,
-            borrowToken: "ALGO",
-            collateralBalance: 9.996118,
-            collateralToken: "USDC",
-            escrowAddress:
-              "ILFNKTZDNV2EZZSQSD6M5QXQP4RORW6MUK6TS7ANBX42EL63F2ESICSXI4",
-            healthFactor: 1.22311919977848,
-          }}
-        /> */}
         <div className="container">
           {loans ? (
             loans?.map((loan) => (
-              <BorrowCard loan={loan} key={loan.escrowAddress} />
+              <BorrowCard
+                loan={loan}
+                key={loan.escrowAddress}
+                setting={loan.setting}
+              />
             ))
           ) : (
             <Spin

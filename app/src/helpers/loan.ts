@@ -22,7 +22,7 @@ export const getLoans = async (address: string) => {
     const escrowAddress = await getLoanEscrowAddress(address, appId as number);
 
     if (escrowAddress) {
-      const { borrowBalance, healthFactor, collateralBalance } =
+      const { borrowBalance, healthFactor, collateralBalance, userAddress } =
         await getLoanInfo(
           indexerClient,
           tokenPair,
@@ -42,6 +42,8 @@ export const getLoans = async (address: string) => {
         healthFactor: convertBigIntToNumber(healthFactor, 14),
         escrowAddress: escrowAddress,
         borrowToken: borrowToken as TestnetPoolKey,
+        tokenPair: pairKey,
+        userAddress,
         collateralToken: collateralToken as TestnetPoolKey,
       });
     }

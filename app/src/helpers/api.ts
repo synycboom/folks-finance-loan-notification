@@ -1,5 +1,6 @@
 import axios from "axios";
 import setting from "../setting";
+import { NotificationSetting } from "../types";
 
 axios.interceptors.request.use(async (config) => {
   const token = window.localStorage.getItem("token");
@@ -36,4 +37,16 @@ export const checkAuthen = async (): Promise<string> => {
   const url = `${setting.SERVER_URL}/v1/auth/check`;
   const response = await axios.get(url);
   return response.data.publicAddress;
+};
+
+export const createOrUpdateNotification = async (data: NotificationSetting) => {
+  const url = `${setting.SERVER_URL}/v1/notifications`;
+  const response = await axios.post(url, data);
+  return response.data;
+};
+
+export const getNotifications = async (): Promise<NotificationSetting[]> => {
+  const url = `${setting.SERVER_URL}/v1/notifications/me`;
+  const response = await axios.get(url);
+  return response.data;
 };

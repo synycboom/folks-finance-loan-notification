@@ -1,6 +1,7 @@
 import Card from "antd/lib/card";
 import Col from "antd/lib/col";
 import Row from "antd/lib/row";
+import message from "antd/lib/message";
 import Switch from "antd/lib/switch";
 import Divider from "antd/lib/divider";
 import Button from "antd/lib/button";
@@ -8,8 +9,9 @@ import Title from "antd/lib/typography/Title";
 import styled from "styled-components";
 import { TOKEN } from "../constants/token";
 import DecimalSlider from "./DecimalSlider";
-import { Loan } from "../types";
+import { Loan, Setting } from "../types";
 import { useState } from "react";
+import { createOrUpdateNotification } from "../helpers/api";
 
 const BorrowCardStyle = styled(Card)`
   border-radius: 8px;
@@ -31,8 +33,8 @@ const DEFAULT_VALUE = {
   targetHealthFactor: 1,
 };
 
-const BorrowCard = ({ loan }: { loan: Loan }) => {
-  const [data, setData] = useState(DEFAULT_VALUE);
+const BorrowCard = ({ loan, setting }: { loan: Loan; setting?: Setting }) => {
+  const [data, setData] = useState(setting || DEFAULT_VALUE);
 
   const {
     borrowBalance,
@@ -40,6 +42,9 @@ const BorrowCard = ({ loan }: { loan: Loan }) => {
     healthFactor,
     borrowToken,
     collateralToken,
+    tokenPair,
+    escrowAddress,
+    userAddress,
   } = loan;
 
   const getHealthFactorColor = (value: number) => {
@@ -60,8 +65,15 @@ const BorrowCard = ({ loan }: { loan: Loan }) => {
     });
   };
 
-  const onSave = () => {
-    console.log(data);
+  const onSave = async () => {
+    await createOrUpdateNotification({
+      ...data,
+      tokenPair,
+      escrowAddress,
+      currentHealthFactor: healthFactor,
+      userAddress,
+    });
+    message.success("Updated successfully");
   };
 
   const { notifyDiscord, notifyTelegram, targetHealthFactor } = data;
