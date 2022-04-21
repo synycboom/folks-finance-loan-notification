@@ -7,13 +7,12 @@ import {
 } from "folks-finance-js-sdk/src";
 import { indexerClient } from ".";
 
-export function convertBigIntToNumber(value: bigint, decimals: number) {
+export const convertBigIntToNumber = (value: bigint, decimals: number) => {
   return Number(value) / 10 ** decimals;
-}
+};
 
 export const getLoans = async (address: string) => {
   let loans = [];
-  console.log("start get loans");
 
   for (const pair in TestnetTokenPairs) {
     const pairKey = pair as TestnetTokenPairKey;
