@@ -2,19 +2,18 @@ import Col from "antd/lib/col";
 import Row from "antd/lib/row";
 import Slider from "antd/lib/slider";
 import InputNumber from "antd/lib/input-number";
-import { useState } from "react";
 
 const MIN_VALUE = 1;
 const MAX_VALUE = 2;
 const STEP_VALUE = 0.01;
 
-const DecimalSlider = () => {
-  const [value, setValue] = useState(1);
-
-  const onChange = (value: number) => {
-    setValue(value);
-  };
-
+const DecimalSlider = ({
+  value,
+  onChange,
+}: {
+  value: number;
+  onChange: (value: number) => void;
+}) => {
   return (
     <Row>
       <Col span={12}>

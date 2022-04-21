@@ -36,13 +36,28 @@ const MyBorrowPage = () => {
     }
   }, [account.address]);
 
+  if (loans) console.log(loans[0]);
+
   return (
     <MyBorrowPageStyle>
       <MainLayout>
         <Title level={3}>My Borrows</Title>
+        {/* <BorrowCard
+          loan={{
+            borrowBalance: 4.340998,
+            borrowToken: "ALGO",
+            collateralBalance: 9.996118,
+            collateralToken: "USDC",
+            escrowAddress:
+              "ILFNKTZDNV2EZZSQSD6M5QXQP4RORW6MUK6TS7ANBX42EL63F2ESICSXI4",
+            healthFactor: 1.22311919977848,
+          }}
+        /> */}
         <div className="container">
           {loans ? (
-            loans?.map((loan) => <BorrowCard loan={loan} />)
+            loans?.map((loan) => (
+              <BorrowCard loan={loan} key={loan.escrowAddress} />
+            ))
           ) : (
             <Spin
               indicator={<LoadingOutlined style={{ fontSize: 48 }} />}
