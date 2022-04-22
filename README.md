@@ -7,6 +7,12 @@ A notification system where users can set triggers for when they should be notif
   <img alt="architecture" src="docs/architecture.drawio.png"/>
 </div>
 
+## Demo Video
+- https://www.youtube.com/watch?v=mJtJ4bH56Nk
+
+## Demo Link
+- https://folks-finance-notifications.web.app
+
 ## Development
 Setup environment files by copying .env.example and edit the variables
 ```shell
