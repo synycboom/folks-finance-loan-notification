@@ -9,7 +9,7 @@ COPY . .
 
 RUN yarn install
 
-RUN yarn build
+RUN yarn build:release
 
 RUN rm -rf node_modules
 
