@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import Title from "antd/lib/typography/Title";
 import Paragraph from "antd/lib/typography/Paragraph";
-import Button from "antd/lib/button";
 import Tag from 'antd/lib/tag';
 import Empty from 'antd/lib/empty';
 import Divider from 'antd/lib/divider';
@@ -42,13 +41,10 @@ const SettingPageStyle = styled.div`
 
 const SettingPage = () => {
   const { fetchUser, user } = useUser();
-  const discord = "";
-  const telegram = "manotien";
-  const telegramBot = "https://t.me/manotien_bot";
 
   useEffect(() => {
     fetchUser();
-  }, []);
+  }, [fetchUser]);
 
   return (
     <SettingPageStyle>
