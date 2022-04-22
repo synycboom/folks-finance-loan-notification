@@ -1,6 +1,8 @@
 # ------- BUILDER -------
 FROM node:14-alpine AS builder
 
+RUN apk add --no-cache git
+
 WORKDIR /app
 
 COPY . .
