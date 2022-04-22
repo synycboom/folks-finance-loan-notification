@@ -6,6 +6,8 @@ services:
       context: services/user-setting
       dockerfile: ./Dockerfile
     restart: "on-failure"
+    ports:
+      - "8080:8080"
     env_file:
       - services/user-setting/.env.production
     depends_on:
