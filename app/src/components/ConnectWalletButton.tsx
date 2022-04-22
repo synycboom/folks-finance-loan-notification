@@ -8,6 +8,8 @@ import { useAccount } from "../helpers/account";
 import { formatAddress, myAlgoConnect, signMessage } from "../helpers";
 import AccountMenu from "./AccountMenu";
 import { getChallengeCode, login } from "../helpers/api";
+import Title from "antd/lib/typography/Title";
+import Paragraph from "antd/lib/typography/Paragraph";
 
 const Style = styled.div`
   .ant-btn {
@@ -96,6 +98,15 @@ const ConnectWalletButton = () => {
         width={320}
         onCancel={hideModal}
       >
+        <Title level={5}>Please read carefully</Title>
+        <Paragraph>
+          As Algorand does not support personal sign, you have to sign a
+          transfer transaction to transfer 0 ALGO from yourself to yourself to
+          prove that you own this address. <br />
+          <br />
+          <b>*THIS WILL NOT COST ANY GAS FEE* </b>
+          because we will not submit it to the blockchain.
+        </Paragraph>
         <Button
           type="primary"
           shape="round"

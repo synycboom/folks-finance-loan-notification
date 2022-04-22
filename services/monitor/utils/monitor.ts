@@ -58,7 +58,7 @@ const checkLoanHealthFactor = async (producer: Producer, topic: string) => {
 
     notification.currentHealthFactor = currentHealthFactor;
 
-    if (targetHealthFactor <= currentHealthFactor && !hasNotified) {
+    if (targetHealthFactor >= currentHealthFactor && !hasNotified) {
       await sendMessage(
         producer,
         topic,
@@ -68,7 +68,7 @@ const checkLoanHealthFactor = async (producer: Producer, topic: string) => {
       );
       notification.hasNotified = true;
       logger.info("trigger send message");
-    } else if (targetHealthFactor > currentHealthFactor && hasNotified) {
+    } else if (targetHealthFactor < currentHealthFactor && hasNotified) {
       notification.hasNotified = false;
       logger.info("update hasNotified = false");
     }

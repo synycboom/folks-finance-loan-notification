@@ -19,7 +19,7 @@ axios.interceptors.response.use(
       if (status === 401) {
         message.error("Your session has expired.");
       }
-      // window.location.href = "/";
+      window.location.href = "/";
     }
 
     return Promise.reject(error);
@@ -50,8 +50,9 @@ export const logout = async () => {
 };
 
 export const checkAuthen = async (): Promise<string> => {
+  const instance = axios.create();
   const url = `${setting.SERVER_URL}/v1/auth/check`;
-  const response = await axios.get(url);
+  const response = await instance.get(url);
   return response.data.publicAddress;
 };
 
