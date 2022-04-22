@@ -18,7 +18,7 @@ router.get(
     const publicAddress = req.publicAddress || '';
     const user = await findUser(publicAddress);
 
-    res.status(200).json(user.toReponse());
+    res.status(200).json(user.toResponse());
   }),
 );
 

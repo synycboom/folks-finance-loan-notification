@@ -14,7 +14,7 @@ interface User {
   updatedAt: Date,
 
   // Workaround for fixing types
-  toReponse: Function
+  toResponse: Function
   updateDiscord(username: string, userId: string): Function
   updateTelegram(username: string, chatId: string): Function
 }
