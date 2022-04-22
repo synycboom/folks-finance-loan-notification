@@ -53,8 +53,8 @@ const MainLayout = ({ children }: any) => {
           <Menu.Item key="/my-borrows">
             <Link to="/my-borrows">My Borrows</Link>
           </Menu.Item>
-          <Menu.Item key="/setting">
-            <Link to="/setting">Settings</Link>
+          <Menu.Item key="/settings">
+            <Link to="/settings">Settings</Link>
           </Menu.Item>
         </Menu>
         <div className="right-container">

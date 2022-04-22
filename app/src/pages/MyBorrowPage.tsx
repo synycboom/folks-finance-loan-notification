@@ -9,6 +9,7 @@ import { useAccount } from "../helpers/account";
 import { Loan } from "../types";
 import LoadingOutlined from "@ant-design/icons/LoadingOutlined";
 import { getNotifications } from "../helpers/api";
+import { useUser } from "../helpers/user";
 
 const { Title } = Typography;
 
@@ -28,10 +29,18 @@ const MyBorrowPageStyle = styled.div`
 `;
 
 const MyBorrowPage = () => {
+  const { fetchUser } = useUser();
+
   const { account } = useAccount();
   const [loans, setLoans] = useState<Loan[] | null>();
 
   const address = account.address;
+
+  useEffect(() => {
+    fetchUser();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   useEffect(() => {
     console.log(address);
     if (address) {

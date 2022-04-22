@@ -12,6 +12,8 @@ import DecimalSlider from "./DecimalSlider";
 import { Loan, Setting } from "../types";
 import { useState } from "react";
 import { createOrUpdateNotification } from "../helpers/api";
+import { useUser } from "../helpers/user";
+import { useNavigate } from "react-router-dom";
 
 const BorrowCardStyle = styled(Card)`
   border-radius: 8px;
@@ -35,6 +37,8 @@ const DEFAULT_VALUE = {
 
 const BorrowCard = ({ loan, setting }: { loan: Loan; setting?: Setting }) => {
   const [data, setData] = useState(setting || DEFAULT_VALUE);
+  const { user } = useUser();
+  const navigate = useNavigate();
 
   const {
     borrowBalance,
@@ -46,6 +50,8 @@ const BorrowCard = ({ loan, setting }: { loan: Loan; setting?: Setting }) => {
     escrowAddress,
     userAddress,
   } = loan;
+
+  const { discordUserName, telegramUsername } = user;
 
   const getHealthFactorColor = (value: number) => {
     return undefined;
@@ -108,20 +114,47 @@ const BorrowCard = ({ loan, setting }: { loan: Loan; setting?: Setting }) => {
             value={targetHealthFactor}
             onChange={(value) => setDataField("targetHealthFactor", value)}
           />
-          <Title level={5} style={{ marginTop: 8 }}>
-            <Switch
-              checked={notifyDiscord}
-              onChange={(value) => setDataField("notifyDiscord", value)}
-            />{" "}
-            Notify on Discord
-          </Title>
-          <Title level={5}>
-            <Switch
-              checked={notifyTelegram}
-              onChange={(value) => setDataField("notifyTelegram", value)}
-            />{" "}
-            Notify on Telegram
-          </Title>
+          {discordUserName ? (
+            <Title level={5} style={{ marginTop: 8 }}>
+              <Switch
+                checked={notifyDiscord}
+                onChange={(value) => setDataField("notifyDiscord", value)}
+              />{" "}
+              Notify on Discord
+            </Title>
+          ) : (
+            <Title level={5} style={{ marginTop: 8 }} disabled>
+              <Switch disabled /> Notify on Discord{" "}
+              <Button
+                type="link"
+                size="large"
+                onClick={() => navigate("/settings")}
+              >
+                Connect to Discord
+              </Button>
+            </Title>
+          )}
+          {telegramUsername ? (
+            <Title level={5}>
+              <Switch
+                checked={notifyTelegram}
+                onChange={(value) => setDataField("notifyTelegram", value)}
+              />{" "}
+              Notify on Telegram
+            </Title>
+          ) : (
+            <Title level={5} style={{ marginTop: 8 }} disabled>
+              <Switch disabled /> Notify on Telegram{" "}
+              <Button
+                type="link"
+                size="large"
+                onClick={() => navigate("/settings")}
+              >
+                Connect to Telegram
+              </Button>
+            </Title>
+          )}
+
           <Button
             style={{ width: 96, marginTop: 8 }}
             type="primary"

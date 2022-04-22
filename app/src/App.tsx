@@ -25,7 +25,7 @@ function App() {
   return (
     <Routes>
       <Route path="/my-borrows" element={<MyBorrowPage />} />
-      <Route path="/setting" element={<SettingPage />} />
+      <Route path="/settings" element={<SettingPage />} />
       <Route path="/" element={<HomePage />} />
     </Routes>
   );

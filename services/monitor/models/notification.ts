@@ -63,3 +63,15 @@ export const NotificationSetting = mongoose.model(
 export const getNotifications = () => {
   return NotificationSetting.find();
 };
+
+schema.methods.updateHasNotified = async function (hasNotified: boolean) {
+  this.hasNotified = hasNotified;
+  await this.save();
+};
+
+schema.methods.updateCurrentHealthFactor = async function (
+  currentHealthFactor: number
+) {
+  this.currentHealthFactor = currentHealthFactor;
+  await this.save();
+};

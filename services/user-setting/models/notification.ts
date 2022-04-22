@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const { Schema } = mongoose;
 
@@ -15,15 +15,15 @@ type NotificationSetting = {
 const schema = new Schema({
   userAddress: {
     type: String,
-    default: '',
+    default: "",
   },
   escrowAddress: {
     type: String,
-    default: '',
+    default: "",
   },
   tokenPair: {
     type: String,
-    default: '',
+    default: "",
   },
   notifyDiscord: {
     type: Boolean,
@@ -56,7 +56,7 @@ const schema = new Schema({
 });
 
 export const NotificationSetting = mongoose.model(
-  'NotificationSetting',
+  "NotificationSetting",
   schema
 );
 
@@ -106,6 +106,7 @@ export const createNotificationSetting = async (data: NotificationSetting) => {
     notifyTelegram,
     targetHealthFactor,
     currentHealthFactor,
+    hasNotified: false,
   };
   const notification = await NotificationSetting.findOneAndUpdate(
     filter,

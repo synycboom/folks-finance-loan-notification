@@ -11,18 +11,20 @@ axios.interceptors.request.use(async (config) => {
   return config;
 });
 
-axios.interceptors.response.use((response) => response, (error) => {
-  if (error.response) {
-    const { status } = error.response;
-    if (status === 401) {
-      message.error('Your session has expired.');
+axios.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response) {
+      const { status } = error.response;
+      if (status === 401) {
+        message.error("Your session has expired.");
+      }
+      // window.location.href = "/";
     }
 
-    window.location.href = '/';
+    return Promise.reject(error);
   }
-
-  return Promise.reject(error);
-});
+);
 
 export const getChallengeCode = async (address: string) => {
   const url = `${setting.SERVER_URL}/v1/auth/challenge?publicAddress=${address}`;
