@@ -7,6 +7,7 @@ import express, { Application } from "express";
 import { Kafka, logLevel } from 'kafkajs';
 import { requireEnv } from './utils/env';
 import logger, { WinstonLogCreator } from './utils/logger';
+import { notify } from './services/notifier';
 
 const kafkaTopic = requireEnv('KAFKA_TOPIC');
 const kafkaConsumerGroup = requireEnv('KAFKA_CONSUMER_GROUP');
@@ -34,13 +35,25 @@ async function start() {
     fromBeginning: true,
   });
 
-
   await consumer.run({
-    eachMessage: async ({ topic, partition, message }) => {
-      console.log({
-        topic,
-        partition,
-        value: message.value?.toString(),
+    eachMessage: async ({ message }) => {
+      const { publicAddress, message: sendingMessage, sendTo } = JSON.parse(message.value?.toString() || '{}');
+      const userAddress = publicAddress.trim();
+
+      logger.info('incoming payload', { userAddress, sendingMessage, sendTo });
+
+      if (!userAddress) {
+        return;
+      }
+      if (!sendingMessage) {
+        return;
+      }
+      if (!(sendTo instanceof Array)) {
+        return;
+      }
+
+      notify(userAddress, sendingMessage, sendTo).catch((err) => {
+        logger.error(err.message, { stack: err.stack });
       });
     },
   });
@@ -55,12 +68,13 @@ async function start() {
   });
 }
 
-start().catch((err) => {
-  console.error(err.message, { stack: err.stack });
-  process.exit(1);
-}).finally(async () => {
+start().catch(async (err) => {
+  logger.error(err.message, { stack: err.stack });
+
   await consumer.disconnect();
-});
+
+  process.exit(1);
+})
 
 const errorTypes = ['unhandledRejection', 'uncaughtException'];
 const signalTraps = ['SIGTERM', 'SIGINT', 'SIGUSR2'];
