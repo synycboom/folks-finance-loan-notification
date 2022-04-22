@@ -20,8 +20,8 @@ import { authenticateToken } from './middlewares';
 
 const router = express.Router();
 
-export const generateAccessToken = (userId: string, publicAddress: string) => {
-  return jwt.sign({ userId, publicAddress }, requireEnv('TOKEN_SECRET'), {
+export const generateAccessToken = (publicAddress: string) => {
+  return jwt.sign({ publicAddress }, requireEnv('TOKEN_SECRET'), {
     expiresIn: '86400s',
   });
 };
@@ -138,7 +138,7 @@ router.post(
 
     const publicAddress = req.body.publicAddress;
     const user = await findUser(publicAddress);
-    const token = generateAccessToken(user._id, publicAddress);
+    const token = generateAccessToken(publicAddress);
     await updateNonce(publicAddress);
 
     res.cookie('jwt', token, { httpOnly: true }).status(200).json({

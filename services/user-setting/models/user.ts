@@ -1,9 +1,22 @@
 import mongoose from 'mongoose';
 import { NotFoundError } from '../errors';
 
-type UpdateUser = {
-  discord?: string;
-  telegram?: string;
+interface User {
+  publicAddress: string,
+  discordUserName: string,
+  discordUserId: string,
+  discordNonce: number,
+  telegramUsername: string,
+  telegramChatId: string,
+  telegramNonce: number,
+  nonce: number,
+  createdAt: Date,
+  updatedAt: Date,
+
+  // Workaround for fixing types
+  toReponse: Function
+  updateDiscord(username: string, userId: string): Function
+  updateTelegram(username: string, chatId: string): Function
 }
 
 const { Schema } = mongoose;
@@ -12,7 +25,7 @@ const generateConnectToken = (address: string, token: number) => `${address}:${t
 
 const randomNonce = () => Math.floor(Math.random() * 10000);
 
-const schema = new Schema({
+const schema = new Schema<User>({
   publicAddress: {
     type: String,
     default: '',
@@ -132,3 +145,5 @@ export const updateNonce = async (publicAddress: string) => {
     nonce: randomNonce(),
   });
 };
+
+type a = typeof schema;

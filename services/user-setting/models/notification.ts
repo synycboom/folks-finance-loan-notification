@@ -12,7 +12,20 @@ type NotificationSetting = {
   escrowAddress: string;
 };
 
-const schema = new Schema({
+type Notification = {
+  userAddress: string,
+  escrowAddress: string,
+  tokenPair: string,
+  notifyDiscord: boolean,
+  notifyTelegram: boolean,
+  targetHealthFactor: number,
+  currentHealthFactor: number;
+  hasNotified: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+const schema = new Schema<Notification>({
   userAddress: {
     type: String,
     default: "",

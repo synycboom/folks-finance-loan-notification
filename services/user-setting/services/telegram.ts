@@ -46,7 +46,7 @@ bot.command('connect', async (ctx) => {
       return;
     }
 
-    await user.updateTelegram(username, chatId);
+    await user.updateTelegram(username || '', chatId.toString());
 
     logger.info(`Algorand wallet ${publicAddress} is connected with ${username}`);
     ctx.reply(`Your Algorand wallet ${publicAddress} is connected with ${username}`);
