@@ -2,7 +2,7 @@ import express from 'express';
 import asyncHandler from 'express-async-handler';
 import { ExtendedRequest } from './types';
 import { ValidationError } from '../errors';
-import { validationResult, checkSchema } from "express-validator";
+import { validationResult, checkSchema } from 'express-validator';
 import { sendMessage as sendDiscordMessage } from '../services/discord';
 import { sendMessage as sendTelegramMessage } from '../services/telegram';
 import logger from '../utils/logger';

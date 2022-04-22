@@ -1,28 +1,28 @@
-import jwt from "jsonwebtoken";
-import express from "express";
-import asyncHandler from "express-async-handler";
-import { validationResult, checkSchema } from "express-validator";
+import jwt from 'jsonwebtoken';
+import express from 'express';
+import asyncHandler from 'express-async-handler';
+import { validationResult, checkSchema } from 'express-validator';
 import {
   encodeAddress,
   decodeAddress,
   encodeObj,
   decodeSignedTransaction,
   isValidAddress,
-} from "algosdk";
-import nacl from "tweetnacl";
-import { Buffer } from "buffer";
-import isBase64 from "validator/lib/isBase64";
-import { ValidationError } from "../errors";
-import { createUser, updateNonce, findUser, getNonce } from "../models/user";
-import { requireEnv } from "../utils/env";
-import { generateChallenge } from "../utils/auth";
-import { authenticateToken } from "./middlewares";
+} from 'algosdk';
+import nacl from 'tweetnacl';
+import { Buffer } from 'buffer';
+import isBase64 from 'validator/lib/isBase64';
+import { ValidationError } from '../errors';
+import { createUser, updateNonce, findUser, getNonce } from '../models/user';
+import { requireEnv } from '../utils/env';
+import { generateChallenge } from '../utils/auth';
+import { authenticateToken } from './middlewares';
 
 const router = express.Router();
 
 export const generateAccessToken = (userId: string, publicAddress: string) => {
-  return jwt.sign({ userId, publicAddress }, requireEnv("TOKEN_SECRET"), {
-    expiresIn: "86400s",
+  return jwt.sign({ userId, publicAddress }, requireEnv('TOKEN_SECRET'), {
+    expiresIn: '86400s',
   });
 };
 
@@ -41,7 +41,7 @@ const verifySignedTransaction = (
   challenge: string,
   data: string
 ) => {
-  const stxn = decodeSignedTransaction(Buffer.from(data, "base64"));
+  const stxn = decodeSignedTransaction(Buffer.from(data, 'base64'));
   if (!stxn.sig) {
     return false;
   }
@@ -51,7 +51,7 @@ const verifySignedTransaction = (
   const txnBytes = encodeObj(stxn.txn.get_obj_for_encoding());
   const msgBytes = new Uint8Array(txnBytes.length + 2);
 
-  msgBytes.set(Buffer.from("TX"));
+  msgBytes.set(Buffer.from('TX'));
   msgBytes.set(txnBytes, 2);
 
   if (Buffer.from(stxn.txn.note || []).toString() !== challenge) {
@@ -72,7 +72,7 @@ const challengeValidation = checkSchema(
       },
     },
   },
-  ["query"]
+  ['query']
 );
 
 const loginValidation = checkSchema({
@@ -87,10 +87,10 @@ const loginValidation = checkSchema({
         const { publicAddress } = req.body;
 
         if (!validateSignature(signedChallenge)) {
-          throw new Error("signedChallenge is not valid");
+          throw new Error('signedChallenge is not valid');
         }
         if (!isValidAddress(publicAddress)) {
-          throw new Error("publicAddress is not valid");
+          throw new Error('publicAddress is not valid');
         }
 
         const nonce = await getNonce(publicAddress);
@@ -99,7 +99,7 @@ const loginValidation = checkSchema({
         if (
           !verifySignedTransaction(publicAddress, challenge, signedChallenge)
         ) {
-          throw new Error("signedChallenge is not valid");
+          throw new Error('signedChallenge is not valid');
         }
 
         return true;
@@ -109,7 +109,7 @@ const loginValidation = checkSchema({
 });
 
 router.get(
-  "/challenge",
+  '/challenge',
   challengeValidation,
   asyncHandler(async (req, res) => {
     const errors = validationResult(req);
@@ -117,7 +117,7 @@ router.get(
       throw new ValidationError(errors.array());
     }
 
-    const publicAddress = req.query.publicAddress?.toString() || "";
+    const publicAddress = req.query.publicAddress?.toString() || '';
     const user = await createUser(publicAddress);
     const challenge = generateChallenge(user.nonce);
 
@@ -128,7 +128,7 @@ router.get(
 );
 
 router.post(
-  "/login",
+  '/login',
   loginValidation,
   asyncHandler(async (req, res) => {
     const errors = validationResult(req);
@@ -141,21 +141,21 @@ router.post(
     const token = generateAccessToken(user._id, publicAddress);
     await updateNonce(publicAddress);
 
-    res.cookie("jwt", token, { httpOnly: true }).status(200).json({
+    res.cookie('jwt', token, { httpOnly: true }).status(200).json({
       token,
     });
   })
 );
 
 router.post(
-  "/logout",
+  '/logout',
   asyncHandler(async (req, res) => {
-    res.clearCookie("jwt").status(204).end();
+    res.clearCookie('jwt').status(204).end();
   })
 );
 
 router.get(
-  "/check",
+  '/check',
   authenticateToken,
   asyncHandler(async (req, res) => {
     res.status(200).json({

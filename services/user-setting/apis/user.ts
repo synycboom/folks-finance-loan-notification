@@ -1,7 +1,6 @@
 import express from 'express';
 import asyncHandler from 'express-async-handler';
-import { decodeAddress } from 'algosdk';
-import { checkSchema, validationResult } from 'express-validator';
+import { validationResult } from 'express-validator';
 import { ExtendedRequest } from './types';
 import { ValidationError } from '../errors';
 import { findUser } from '../models/user';

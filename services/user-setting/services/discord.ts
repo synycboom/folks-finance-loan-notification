@@ -25,7 +25,7 @@ client.once('ready', () => {
 	logger.info('discord bot is ready!');
 });
 
-client.on("message", async (message) => {
+client.on('message', async (message) => {
   // INVOCATION IN PULIC CHANNEL
   if (message.content === INVOCATION_STRING_MESSAGE) {
     message.reply(REPLY_MESSAGE);
@@ -35,7 +35,7 @@ client.on("message", async (message) => {
   }
 
   // VERIFICATION IN DIRECT MESSAGE
-  if (message.channel.type === "dm") {
+  if (message.channel.type === 'dm') {
     const {
       username: handle,
       discriminator,
