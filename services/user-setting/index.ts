@@ -8,6 +8,7 @@ import cors from "cors";
 import authRoutes from "./apis/auth";
 import userRoutes from "./apis/user";
 import notificationRoutes from "./apis/notification";
+import notifyRoutes from "./apis/notify";
 import logger from "./utils/logger";
 import { errorHandler } from "./errors";
 import initializeDb from "./db";
@@ -15,35 +16,52 @@ import { authenticateToken } from "./apis/middlewares";
 import "./services/discord";
 import "./services/telegram";
 
-const app: Application = express();
-const port = process.env.PORT || 8080;
+// Public APIs
+const publicApp: Application = express();
+const publicPort = process.env.PORT || 8080;
 const domains: string[] = [];
 
-app.use(
+publicApp.use(
   cors({
     origin: [/localhost:*/, ...domains],
     credentials: true,
   })
 );
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
-app.use("/v1/auth", authRoutes);
-app.use("/v1/users", authenticateToken, userRoutes);
-app.use("/v1/notifications", authenticateToken, notificationRoutes);
-app.use(errorHandler);
+publicApp.use(express.json());
+publicApp.use(express.urlencoded({ extended: true }));
+publicApp.use(cookieParser());
+publicApp.use("/v1/auth", authRoutes);
+publicApp.use("/v1/users", authenticateToken, userRoutes);
+publicApp.use("/v1/notifications", authenticateToken, notificationRoutes);
+publicApp.use(errorHandler);
+
+// Internal APIs
+const internalApp: Application = express();
+const internalPort = process.env.INTERNAL_PORT || 18080;
+
+internalApp.use(express.json());
+internalApp.use(express.urlencoded({ extended: true }));
+internalApp.use("/v1/notify", notifyRoutes);
+internalApp.use(errorHandler);
 
 async function start() {
   logger.info("initializing database connection...");
 
   await initializeDb();
 
-  app.get("/health", (_, res) => {
+  publicApp.get("/health", (_, res) => {
     res.send("ok");
   });
-  app.listen(port, (): void => {
-    logger.info(`running server on port ${port}`);
+  publicApp.listen(publicPort, (): void => {
+    logger.info(`running server on port ${publicPort}`);
+  });
+
+  internalApp.get("/health", (_, res) => {
+    res.send("ok");
+  });
+  internalApp.listen(internalPort, (): void => {
+    logger.info(`running internal server on port ${internalPort}`);
   });
 }
 

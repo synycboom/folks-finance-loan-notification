@@ -39,7 +39,6 @@ bot.command('connect', async (ctx) => {
     const chatId = ctx.message.chat.id;
     const username = ctx.from.username;
     const user = await findUser(publicAddress);
-    console.log(user);
 
     if (nonce !== user.telegramNonce.toString()) {
       ctx.reply(INVALID_NONCE_MESSAGE);
@@ -77,3 +76,9 @@ logger.info('telegram bot is ready!');
     }
   })
 });
+
+export const sendMessage = async (publicAddress: string, message: string) => {
+  const user = await findUser(publicAddress);
+
+  await bot.telegram.sendMessage(user.telegramChatId, message);
+}

@@ -12,7 +12,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"signedChallenge\": \"gqNzaWfEQOkFf7iOVUTOZUBdJJabNo1mxjbbN8HUXlzN59zd4H6IWPPvBu47w1WRWwtHNEZ1jG5vbqg2pdE2Ks1pbBSUdQqjdHhuiaNmZWXNA+iiZnbOAUFEA6NnZW6sdGVzdG5ldC12MS4womdoxCBIY7UYpLPITsgQ8i1PEIHLD3HwWaesIN7GL39w5Qk6IqJsds4BQUfrpG5vdGXEHHNpZ25pbmcgb25lLXRpbWUgbm9uY2U6IDE1ODGjcmN2xCDw35Dd3XPg4tUg10jszNXvDM0Z8++K7p2tDZwguwQr6aNzbmTEIPDfkN3dc+Di1SDXSOzM1e8MzRnz74runa0NnCC7BCvppHR5cGWjcGF5\",\r\n    \"publicAddress\": \"6DPZBXO5OPQOFVJA25EOZTGV54GM2GPT56FO5HNNBWOCBOYEFPUWMILVV4\"\r\n}",
+					"raw": "{\r\n    \"signedChallenge\": \"gqNzaWfEQMaBDyRD8gARgH1RFMl25W3LO56DS/kaNb7guRh0EtRPH+olSQiSJDkbfXkZgqqLdtKIhlzd/U8DANh+EifgWACjdHhuiaNmZWXNA+iiZnbOAUI4A6NnZW6sdGVzdG5ldC12MS4womdoxCBIY7UYpLPITsgQ8i1PEIHLD3HwWaesIN7GL39w5Qk6IqJsds4BQjvrpG5vdGXEHHNpZ25pbmcgb25lLXRpbWUgbm9uY2U6IDU4NzijcmN2xCDw35Dd3XPg4tUg10jszNXvDM0Z8++K7p2tDZwguwQr6aNzbmTEIPDfkN3dc+Di1SDXSOzM1e8MzRnz74runa0NnCC7BCvppHR5cGWjcGF5\",\r\n    \"publicAddress\": \"6DPZBXO5OPQOFVJA25EOZTGV54GM2GPT56FO5HNNBWOCBOYEFPUWMILVV4\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -68,7 +68,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/v1/users?publicAddress=6DPZBXO5OPQOFVJA25EOZTGV54GM2GPT56FO5HNNBWOCBOYEFPUWMILVV4",
+					"raw": "http://localhost:8080/v1/users/me",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -76,26 +76,21 @@
 					"port": "8080",
 					"path": [
 						"v1",
-						"users"
-					],
-					"query": [
-						{
-							"key": "publicAddress",
-							"value": "6DPZBXO5OPQOFVJA25EOZTGV54GM2GPT56FO5HNNBWOCBOYEFPUWMILVV4"
-						}
+						"users",
+						"me"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "UpdateUser",
+			"name": "Notify",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"publicAddress\": \"6DPZBXO5OPQOFVJA25EOZTGV54GM2GPT56FO5HNNBWOCBOYEFPUWMILVV4\",\r\n    \"discord\": \"1234\",\r\n    \"telegram\": \"t1234\"\r\n}",
+					"raw": "{\r\n    \"publicAddress\": \"6DPZBXO5OPQOFVJA25EOZTGV54GM2GPT56FO5HNNBWOCBOYEFPUWMILVV4\",\r\n    \"message\": \"hello\",\r\n    \"sendTo\": [\"discord\", \"telegram\"]\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -103,21 +98,15 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/v1/users?=6DPZBXO5OPQOFVJA25EOZTGV54GM2GPT56FO5HNNBWOCBOYEFPUWMILVV4",
+					"raw": "http://localhost:18080/v1/notify",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "8080",
+					"port": "18080",
 					"path": [
 						"v1",
-						"users"
-					],
-					"query": [
-						{
-							"key": "",
-							"value": "6DPZBXO5OPQOFVJA25EOZTGV54GM2GPT56FO5HNNBWOCBOYEFPUWMILVV4"
-						}
+						"notify"
 					]
 				}
 			},
