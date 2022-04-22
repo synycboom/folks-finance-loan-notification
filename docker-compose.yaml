@@ -14,7 +14,7 @@ services:
   monitor:
     container_name: loan-notification-monitor
     build:
-      context: services/notifier
+      context: services/monitor
       dockerfile: ./Dockerfile
     restart: "on-failure"
     env_file:
