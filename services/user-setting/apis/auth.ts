@@ -22,7 +22,7 @@ const router = express.Router();
 
 export const generateAccessToken = (userId: string, publicAddress: string) => {
   return jwt.sign({ userId, publicAddress }, requireEnv("TOKEN_SECRET"), {
-    expiresIn: "1800s",
+    expiresIn: "86400s",
   });
 };
 
