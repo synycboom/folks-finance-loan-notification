@@ -21,6 +21,9 @@ deps.up:
 deps.down:
 	docker-compose -f docker-compose.deps.yaml down
 
+app.up:
+	cd $(SRC_PATH)/app && yarn start
+
 monitor.up:
 	cd $(SRC_PATH)/services/monitor && yarn dev
 

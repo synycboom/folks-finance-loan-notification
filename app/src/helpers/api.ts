@@ -1,6 +1,7 @@
 import axios from "axios";
 import setting from "../setting";
-import { NotificationSetting } from "../types";
+import { NotificationSetting, User } from "../types";
+import message from "antd/lib/message";
 
 axios.interceptors.request.use(async (config) => {
   const token = window.localStorage.getItem("token");
@@ -8,6 +9,19 @@ axios.interceptors.request.use(async (config) => {
     config.headers = { Authorization: `Bearer ${token}`, ...config.headers };
   }
   return config;
+});
+
+axios.interceptors.response.use((response) => response, (error) => {
+  if (error.response) {
+    const { status } = error.response;
+    if (status === 401) {
+      message.error('Your session has expired.');
+    }
+
+    window.location.href = '/';
+  }
+
+  return Promise.reject(error);
 });
 
 export const getChallengeCode = async (address: string) => {
@@ -48,5 +62,12 @@ export const createOrUpdateNotification = async (data: NotificationSetting) => {
 export const getNotifications = async (): Promise<NotificationSetting[]> => {
   const url = `${setting.SERVER_URL}/v1/notifications/me`;
   const response = await axios.get(url);
+  return response.data;
+};
+
+export const getUser = async (): Promise<User> => {
+  const url = `${setting.SERVER_URL}/v1/users/me`;
+  const response = await axios.get(url);
+
   return response.data;
 };

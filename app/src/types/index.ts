@@ -27,3 +27,13 @@ export type NotificationSetting = {
   currentHealthFactor: number;
   escrowAddress: string;
 };
+
+export type User = {
+  publicAddress: string;
+  discordConnectToken: string;
+  telegramConnectToken: string;
+  telegramUsername: string;
+  telegramChatId: string;
+  discordUserName: string;
+  discordUserId: string;
+};
