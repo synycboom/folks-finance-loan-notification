@@ -5,19 +5,44 @@ import {
   TestnetTokenPairKey,
   TestnetPoolKey,
 } from "folks-finance-js-sdk";
+import { Producer } from "kafkajs";
 import { Indexer } from "algosdk";
 import { getNotifications, NotificationSetting } from "../models/notification";
 import { requireEnv } from "./env";
 
 const indexerClient = new Indexer("", requireEnv("INDEXER_CLIENT"), 443);
 
-export const startMonitorLoans = async () => {
+export const startMonitorLoans = async (producer: Producer, topic: string) => {
   while (true) {
     // await checkLoanHealthFactor();
     await sleep(2000);
     // ...do some async work...
+
+    // send message here
+    await sendMessage(producer, topic, '<publicAddress>', 'hello', ['telegram', 'discord']);
   }
 };
+
+const sendMessage = async (
+  producer: Producer,
+  topic: string,
+  publicAddress: string,
+  message: string,
+  sendTo: string[],
+) => {
+  await producer.connect();
+  await producer.send({
+    topic,
+    messages: [{
+      key: publicAddress,
+      value: JSON.stringify({
+        publicAddress,
+        message,
+        sendTo,
+      }),
+    }]
+  });
+}
 
 const checkLoanHealthFactor = async () => {
   const notifications = await getNotifications();

@@ -28,13 +28,12 @@ async function start() {
   logger.info("producer is connecting to kafka broker(s)");
 
   await initializeDb();
-
   await producer.connect();
 
   logger.info("producer is running");
-
   logger.info("start monitoring loans");
-  startMonitorLoans();
+
+  startMonitorLoans(producer, kafkaTopic);
 
   app.get("/health", (_, res) => {
     res.send("ok");
