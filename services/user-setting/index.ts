@@ -19,7 +19,7 @@ import "./services/telegram";
 // Public APIs
 const publicApp: Application = express();
 const publicPort = process.env.PORT || 8080;
-const domains: string[] = ['folks-finance-notifications.web.app'];
+const domains: string[] = ['.web.app'];
 
 publicApp.use(
   cors({
