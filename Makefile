@@ -34,6 +34,6 @@ user-setting.up:
 	cd $(SRC_PATH)/services/user-setting && yarn dev
 
 all.up:
-	docker-compose up --build
+	docker-compose up --build -d
 
 .PHONY: deps.up deps.down monitor.up prepare.env prepare.node prepare.topic all.up
