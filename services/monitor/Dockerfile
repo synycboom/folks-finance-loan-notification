@@ -11,10 +11,6 @@ RUN yarn install
 
 RUN yarn build:release
 
-RUN rm -rf node_modules
-
-RUN yarn install --production
-
 # ------- RELEASE -------
 FROM node:14-alpine AS release
 
