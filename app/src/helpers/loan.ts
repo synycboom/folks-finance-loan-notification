@@ -4,7 +4,7 @@ import {
   TestnetOracle,
   TestnetTokenPairKey,
   TestnetPoolKey,
-} from "folks-finance-js-sdk/src";
+} from "folks-finance-js-sdk";
 import { indexerClient } from ".";
 
 export const convertBigIntToNumber = (value: bigint, decimals: number) => {

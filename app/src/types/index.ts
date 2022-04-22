@@ -1,4 +1,4 @@
-import { TestnetPoolKey } from "folks-finance-js-sdk/src";
+import { TestnetPoolKey } from "folks-finance-js-sdk";
 
 export type Setting = {
   notifyDiscord: boolean;
