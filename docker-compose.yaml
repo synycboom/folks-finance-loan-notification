@@ -11,6 +11,18 @@ services:
     depends_on:
       - mongo
 
+  monitor:
+    container_name: loan-notification-monitor
+    build:
+      context: services/notifier
+      dockerfile: ./Dockerfile
+    restart: "on-failure"
+    env_file:
+      - services/monitor/.env.production
+    depends_on:
+      - zookeeper
+      - kafka
+
   notifier:
     container_name: loan-notification-notifier
     build:
